@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        Arvore avl = new Arvore(); // supondo que você esteja usando a classe Arvore
+        Arvore avl = new Arvore();
         No[] nos = new No[50];
         int opcao;
         do {
