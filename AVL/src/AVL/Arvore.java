@@ -87,7 +87,6 @@ public class Arvore implements ArvoreInterface {
         return treeSearch(k, v.filho_direito);
     }
 
-    // Inserção
     public No inserir(No v) {
         if (root == null) {
             root = v;
@@ -95,15 +94,16 @@ public class Arvore implements ArvoreInterface {
         } else {
             insercao(root, v);
         }
+        qtd_no++;
         return v;
     }
-
+    // inserção recursiva
     public void insercao(No atual, No novo) {
         if (novo.chave < atual.chave) {
             if (atual.filho_esquerdo == null) {
                 atual.filho_esquerdo = novo;
                 novo.pai = atual;
-                qtd_no++;
+                atualiza_FB(novo);
             } else {
                 insercao(atual.filho_esquerdo, novo);
             }
@@ -111,14 +111,59 @@ public class Arvore implements ArvoreInterface {
             if (atual.filho_direito == null) {
                 atual.filho_direito = novo;
                 novo.pai = atual;
-                qtd_no++;
+                atualiza_FB(novo);
             } else {
                 insercao(atual.filho_direito, novo);
             }
         }
     }
 
-    // Remoção
+    // função para balancear
+    public No atualiza_FB(No no) {
+        if(no.is_left())
+            no.pai.fb++;
+        if(no.is_rigth())
+            no.pai.fb--;
+        if(no.pai.fb == 0)
+            return no;
+        if(no.pai.fb > 1 || no.pai.fb < 0)
+            balancear(no,no.pai);
+        return atualiza_FB(no.pai);
+    }
+
+    public No balancear(No no, No antecessor) { // comparar se sao sinais iguais ou sinais diferentes
+        if(no.fb > 0 && antecessor.fb > 0) { // positivo = a rotação direita simples
+            rotacao_simples_direita(no,antecessor);
+        }
+        if(no.fb > 0 && antecessor.fb < 0) { // primeiro faz a rotação do no e depois a do antecessor
+            rotacao_dupla_esquerda();
+        }
+        if(no.fb < 0 && antecessor.fb > 0) { // primeiro faz a rotação do no e depois a do antecessor
+            rotacao_dupla_direita();
+        }
+        if(no.fb < 0 && antecessor.fb < 0) { // negativo = esquerda
+            rotacao_simples_esquerda();
+        }
+    }
+
+    /*
+    simples
+    antecessor vira filho e sua subarvore o acompanha
+    verifica se o atual filho era esquerdo ou direito,
+        se esquerdo: atual_filho.esquerdo == antecessor
+            salva o antigo filho.esquerdo do antecessor
+        se direito: atual_filho.direito == antecessor
+            salva o antigo filho.direito do antecessor
+     o resto da arvore permanece igual
+
+
+    */
+
+    public void rotacao_simples_direita(No no, No antecessor) {
+
+    }
+
+    // remocao
     public void remocao(int k) {
         No v = treeSearch(k, root);
         if (v == null) return;
@@ -199,7 +244,7 @@ public class Arvore implements ArvoreInterface {
                 No atual = fila.poll();
 
                 if (atual != null) {
-                    System.out.print(atual.chave);
+                    System.out.print(atual.chave+'['+atual.fb+']');
                     fila.add(atual.filho_esquerdo);
                     fila.add(atual.filho_direito);
                 } else {

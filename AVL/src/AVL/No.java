@@ -5,12 +5,14 @@ public class No {
     public No filho_direito;
     public int chave;
     public No pai;
+    public int fb;
 
     No(int chave) {
         this.chave = chave;
         this.filho_direito = null;
         this.filho_esquerdo = null;
         this.pai = null;
+        this.fb = 0;
     }
 
     public No getFilho_esquerdo() {
@@ -60,4 +62,13 @@ public class No {
         }
         return cont;
     }
+
+    public boolean is_left() {
+        return this.chave <  this.pai.chave;
+    }
+
+    public boolean is_rigth() {
+        return this.chave > this.pai.chave;
+    }
+
 }
