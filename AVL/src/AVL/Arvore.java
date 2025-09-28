@@ -1,5 +1,8 @@
 package AVL;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 public class Arvore implements ArvoreInterface {
     protected No root;
     protected int qtd_no;
@@ -32,9 +35,9 @@ public class Arvore implements ArvoreInterface {
         if (isExternal(v)) return 0;
         int h = 0;
         if (v.filho_esquerdo != null)
-            h = Math.max(h, height(v.filho_esquerdo));
+            h = max(h, height(v.filho_esquerdo));
         if (v.filho_direito != null)
-            h = Math.max(h, height(v.filho_direito));
+            h = max(h, height(v.filho_direito));
         return 1 + h;
     }
 
@@ -103,7 +106,7 @@ public class Arvore implements ArvoreInterface {
             if (atual.filho_esquerdo == null) {
                 atual.filho_esquerdo = novo;
                 novo.pai = atual;
-                atualiza_FB(novo);
+                atualiza_FB_insercao(novo);
             } else {
                 insercao(atual.filho_esquerdo, novo);
             }
@@ -111,7 +114,7 @@ public class Arvore implements ArvoreInterface {
             if (atual.filho_direito == null) {
                 atual.filho_direito = novo;
                 novo.pai = atual;
-                atualiza_FB(novo);
+                atualiza_FB_insercao(novo);
             } else {
                 insercao(atual.filho_direito, novo);
             }
@@ -119,30 +122,47 @@ public class Arvore implements ArvoreInterface {
     }
 
     // função para balancear
-    public No atualiza_FB(No no) {
-        if(no.is_left())
-            no.pai.fb++;
-        if(no.is_rigth())
-            no.pai.fb--;
-        if(no.pai.fb == 0)
-            return no;
-        if(no.pai.fb > 1 || no.pai.fb < 0)
-            balancear(no,no.pai);
-        return atualiza_FB(no.pai);
+    public No atualiza_FB_insercao(No novo) {
+        if(novo.is_left())
+            novo.pai.fb++;
+        if(novo.is_rigth())
+            novo.pai.fb--;
+        if(novo.pai != null && novo.pai.fb == 0)
+            return novo;
+        if(novo.pai != null && ( novo.pai.fb >= 2 || novo.pai.fb <= -2))
+            balancear(novo,novo.pai);
+        return atualiza_FB_insercao(novo.pai);
     }
 
-    public No balancear(No no, No antecessor) { // comparar se sao sinais iguais ou sinais diferentes
-        if(no.fb > 0 && antecessor.fb > 0) { // positivo = a rotação direita simples
-            rotacao_simples_direita(no,antecessor);
+    public No atualiza_FB_remocao(No no) {
+        if(no.is_left())
+            no.pai.fb--;
+        if(no.is_rigth())
+            no.pai.fb++;
+        if(no.pai.fb >= 2 || no.pai.fb <= -2) {
+            balancear(no, no.pai);
+            return no;
         }
-        if(no.fb > 0 && antecessor.fb < 0) { // primeiro faz a rotação do no e depois a do antecessor
-            rotacao_dupla_esquerda();
+        if(no.pai.fb != 0)
+            return no;
+        return atualiza_FB_remocao(no.pai);
+    }
+
+
+    public void balancear(No atual, No antecessor) { // comparar se sao sinais iguais ou sinais diferentes
+        if(atual.fb > 0 && antecessor.fb > 0) { // positivo = a rotação direita simples
+            rotacao_simples_direita(atual,antecessor);
         }
-        if(no.fb < 0 && antecessor.fb > 0) { // primeiro faz a rotação do no e depois a do antecessor
-            rotacao_dupla_direita();
+        if(atual.fb > 0 && antecessor.fb < 0) { // primeiro faz a rotação do atual e depois a do antecessor
+            rotacao_simples_direita(atual, antecessor);
+            rotacao_simples_esquerda(antecessor, antecessor.pai);
         }
-        if(no.fb < 0 && antecessor.fb < 0) { // negativo = esquerda
-            rotacao_simples_esquerda();
+        if(atual.fb < 0 && antecessor.fb > 0) { // primeiro faz a rotação do atual e depois a do antecessor
+            rotacao_simples_esquerda(atual, antecessor);
+            rotacao_simples_direita(antecessor, antecessor.pai);
+        }
+        if(atual.fb < 0 && antecessor.fb < 0) { // negativo = esquerda
+            rotacao_simples_esquerda(atual, antecessor);
         }
     }
 
@@ -155,12 +175,33 @@ public class Arvore implements ArvoreInterface {
         se direito: atual_filho.direito == antecessor
             salva o antigo filho.direito do antecessor
      o resto da arvore permanece igual
-
-
     */
 
-    public void rotacao_simples_direita(No no, No antecessor) {
+    public void rotacao_simples_direita(No atual, No antecessor) {
+        atual.pai = antecessor.pai;
+        if(antecessor.pai != null ) { // caso o antecessor fosse raiz
+            antecessor.pai.filho_esquerdo = atual; // o filho esquerdo dele vai ser o atual
+        }
+        if(atual.filho_direito != null) {
+            antecessor.filho_direito = atual.filho_direito; // salva e esse filho sera filho do antecessor
+        }
+        atual.filho_direito = atual;
+        atual.fb = atual.fb + 1 - max(antecessor.fb, 0);
+        antecessor.fb = antecessor.fb + 1 + min(atual.fb, 0);
+    }
 
+
+    public void rotacao_simples_esquerda(No atual, No antecessor) {
+        atual.pai = antecessor.pai;
+        if(antecessor.pai != null) // caso o antecessor nao for raiz
+            antecessor.pai.filho_direito = atual; // o filho direito dele vai ser o atual
+
+        if(atual.filho_esquerdo != null) // se o atual tiver filho esquerdo
+            antecessor.filho_direito = atual.filho_esquerdo; // esse filho esquerdo agora sera filho direito do antecessor
+
+        atual.filho_esquerdo = antecessor; // antecessor agora é filho do atual
+        atual.fb = atual.fb + 1 - min(antecessor.fb, 0);
+        antecessor.fb = antecessor.fb + 1 + max(atual.fb, 0);
     }
 
     // remocao
@@ -244,7 +285,7 @@ public class Arvore implements ArvoreInterface {
                 No atual = fila.poll();
 
                 if (atual != null) {
-                    System.out.print(atual.chave+'['+atual.fb+']');
+                    System.out.printf("%s[%s]%n", atual.chave, atual.fb);
                     fila.add(atual.filho_esquerdo);
                     fila.add(atual.filho_direito);
                 } else {

@@ -64,10 +64,13 @@ public class No {
     }
 
     public boolean is_left() {
+        if(this.pai == null)
+            return false;
         return this.chave <  this.pai.chave;
     }
 
     public boolean is_rigth() {
+        if(this.pai == null) return false;
         return this.chave > this.pai.chave;
     }
 
