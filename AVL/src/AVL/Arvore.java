@@ -31,14 +31,12 @@ public class Arvore implements ArvoreInterface {
         return this.qtd_no;
     }
     public int height(No v) {
-        if (v == null) return 0;
-        if (isExternal(v)) return 0;
-        int h = 0;
-        if (v.filho_esquerdo != null)
-            h = max(h, height(v.filho_esquerdo));
-        if (v.filho_direito != null)
-            h = max(h, height(v.filho_direito));
-        return 1 + h;
+        if (v == null) return -1; // caso base
+
+        int h_esq = height(v.filho_esquerdo);
+        int h_dir = height(v.filho_esquerdo);
+
+        return max(h_esq, h_dir) + 1;
     }
 
     public boolean isEmpty() {
@@ -90,42 +88,46 @@ public class Arvore implements ArvoreInterface {
         return treeSearch(k, v.filho_direito);
     }
 
-    public No inserir(No v) {
-        if (root == null) {
-            root = v;
-            qtd_no++;
+    public No inserir(int v) {
+        No novo = new No(v);
+        if (this.root == null) {
+            this.root = novo;
         } else {
-            insercao(root, v);
+            insercao(root, novo);
         }
         qtd_no++;
-        return v;
+        return novo;
     }
     // inserção recursiva
-    public void insercao(No atual, No novo) {
-        if (novo.chave < atual.chave) {
-            if (atual.filho_esquerdo == null) {
-                atual.filho_esquerdo = novo;
-                novo.pai = atual;
-                atualiza_FB_insercao(novo);
+    public void insercao(No antecessor, No atual) {
+        if (atual.chave < antecessor.chave) {
+            if (antecessor.filho_esquerdo == null) {
+                antecessor.filho_esquerdo = atual;
+                atual.pai = antecessor;
+                atualiza_FB_insercao(atual);
+
             } else {
-                insercao(atual.filho_esquerdo, novo);
+                insercao(antecessor.filho_esquerdo, atual);
             }
-        } else if (novo.chave > atual.chave) {
-            if (atual.filho_direito == null) {
-                atual.filho_direito = novo;
-                novo.pai = atual;
-                atualiza_FB_insercao(novo);
+        } else if (atual.chave > antecessor.chave) {
+            if (antecessor.filho_direito == null) {
+                antecessor.filho_direito = atual;
+                atual.pai = antecessor;
+                atualiza_FB_insercao(atual);
             } else {
-                insercao(atual.filho_direito, novo);
+                insercao(antecessor.filho_direito, atual);
             }
         }
     }
 
     // função para balancear
     public No atualiza_FB_insercao(No novo) {
-        if(novo.is_left())
+        if (novo == null || novo.pai == null) {
+            return novo;
+        }
+        if(novo.chave < novo.pai.chave)
             novo.pai.fb++;
-        if(novo.is_rigth())
+        if(novo.chave > novo.pai.chave)
             novo.pai.fb--;
         if(novo.pai != null && novo.pai.fb == 0)
             return novo;
@@ -182,12 +184,17 @@ public class Arvore implements ArvoreInterface {
         if(antecessor.pai != null ) { // caso o antecessor fosse raiz
             antecessor.pai.filho_esquerdo = atual; // o filho esquerdo dele vai ser o atual
         }
+
+        if(antecessor.pai == null) { // se o pai do antecessor for nulo é pq o antecessor é raiz12
+            this.root = atual;
+        }
+
         if(atual.filho_direito != null) {
             antecessor.filho_direito = atual.filho_direito; // salva e esse filho sera filho do antecessor
         }
         atual.filho_direito = atual;
-        atual.fb = atual.fb + 1 - max(antecessor.fb, 0);
-        antecessor.fb = antecessor.fb + 1 + min(atual.fb, 0);
+        antecessor.fb = antecessor.fb - 1 - max(atual.fb, 0);
+        atual.fb = atual.fb - 1 + min(antecessor.fb, 0);
     }
 
 
@@ -196,12 +203,15 @@ public class Arvore implements ArvoreInterface {
         if(antecessor.pai != null) // caso o antecessor nao for raiz
             antecessor.pai.filho_direito = atual; // o filho direito dele vai ser o atual
 
+        if(antecessor.pai == null) { // se o pai do antecessor for nulo é pq o antecessor é raiz
+            this.root = atual;
+        }
         if(atual.filho_esquerdo != null) // se o atual tiver filho esquerdo
             antecessor.filho_direito = atual.filho_esquerdo; // esse filho esquerdo agora sera filho direito do antecessor
 
         atual.filho_esquerdo = antecessor; // antecessor agora é filho do atual
-        atual.fb = atual.fb + 1 - min(antecessor.fb, 0);
-        antecessor.fb = antecessor.fb + 1 + max(atual.fb, 0);
+        antecessor.fb = antecessor.fb + 1 - min(atual.fb, 0);
+        atual.fb = atual.fb + 1 + max(antecessor.fb, 0);
     }
 
     // remocao
@@ -262,50 +272,77 @@ public class Arvore implements ArvoreInterface {
         return v;
     }
 
-    public void imprimir(No root) {
+
+
+    // Assumindo que a classe Arvore/AVL tem o método height(No) e isEmpty()
+    public void imprimir() {
         if (isEmpty()) {
-            System.out.println("(tá vazia)");
+            System.out.println("(Árvore vazia)");
             return;
         }
 
-        int altura = height(root); // altura da arv
-        int largura = (int) Math.pow(2, altura + 1);
+        int altura = height(root);
+        // Largura total: 2^(altura + 1) para ter espaço suficiente, ou 2^altura * 4
+        int larguraTotal = (int) Math.pow(2, altura) * 4;
 
         java.util.Queue<No> fila = new java.util.LinkedList<>();
         fila.add(root);
+        int noNulls = 0; // Contador para saber se a fila só tem nulos
 
         for (int nivel = 0; nivel <= altura; nivel++) {
             int tamanho = fila.size();
-            int espacoEntre = largura / (int) Math.pow(2, nivel + 1);
 
-            // espaco inicial antes do primeiro no
-            printEspacos(espacoEntre);
+            // Se todos os elementos restantes na fila são nulos, podemos parar.
+            if (noNulls == tamanho) break;
+            noNulls = 0;
+
+            // Calcula o espaçamento
+            // O espacoAntes será o espaço lateral antes do primeiro nó
+            int espacoAntes = (larguraTotal / (int) Math.pow(2, nivel + 1));
+            // O espacoEntreNo será o espaço entre os nós do mesmo nível
+            int espacoEntreNo = (larguraTotal / (int) Math.pow(2, nivel));
+
+            // 1. Espaço inicial antes do primeiro nó
+            printEspacos(espacoAntes);
 
             for (int i = 0; i < tamanho; i++) {
                 No atual = fila.poll();
 
                 if (atual != null) {
-                    System.out.printf("%s[%s]%n", atual.chave, atual.fb);
+                    // Imprime a chave e o FB sem quebra de linha (%n)
+                    // Use format("%-4s", ...) para garantir que a impressão tenha tamanho fixo (ex: 4)
+                    System.out.printf("%-4s", atual.chave + "[" + atual.fb + "]");
+
                     fila.add(atual.filho_esquerdo);
                     fila.add(atual.filho_direito);
                 } else {
-                    System.out.print(" ");
+                    // Imprime espaços no lugar do nó nulo para manter a estrutura
+                    System.out.printf("%-4s", "    "); // Ou use "    " (4 espaços)
+
                     fila.add(null);
                     fila.add(null);
+                    noNulls++; // Conta o nó nulo
                 }
 
-                // espaço entre os nós do mesmo nível
-                printEspacos(espacoEntre * 2);
+                // 2. Espaço entre os nós do mesmo nível
+                // O último elemento de cada nível não precisa do espaçoEntreNo
+                if (i < tamanho - 1) {
+                    printEspacos(espacoEntreNo - 4); // subtrai o tamanho da string impressa
+                } else {
+                    // add o espaçamento do prox nível após o último nó
+                    printEspacos(espacoAntes);
+                }
             }
-            System.out.println(); // próxima linha
+            System.out.println(); // quebra de linha para o próximo nível
         }
     }
 
-    // func auxiliar para imprimir espaços
+    // função auxiliar printEspacos está correta:
     private void printEspacos(int qtd) {
+        // garante que a quantidade não seja negativa
+        qtd = Math.max(0, qtd);
         for (int i = 0; i < qtd; i++) {
             System.out.print(" ");
         }
     }
-
 }

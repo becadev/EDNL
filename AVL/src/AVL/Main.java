@@ -131,7 +131,7 @@ public class Main {
                 int chave = input.nextInt();
                 No novo = new No(chave);
                 nos[avl.size()] = novo;
-                avl.inserir(novo);
+                avl.inserir(chave);
                 System.out.println("Nó inserido!");
             }
             if (opcao == 13) {
