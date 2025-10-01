@@ -138,9 +138,9 @@ public class Arvore implements ArvoreInterface {
     }
 
     public No atualiza_FB_remocao(No no) {
-        if(no.is_left())
+        if(no.chave < no.pai.chave)
             no.pai.fb--;
-        if(no.is_rigth())
+        if(no.chave > no.pai.chave)
             no.pai.fb++;
         if(no.pai.fb >= 2 || no.pai.fb <= -2) {
             balancear(no, no.pai);
@@ -223,11 +223,14 @@ public class Arvore implements ArvoreInterface {
         No v = treeSearch(k, root);
         if (v == null) return;
 
-        if (isExternal(v)) { // Caso 1
+        if (isExternal(v)) {
+            System.out.println("CASO 01 DE REMOÇÃO: ");
             Caso01remocao(v);
-        } else if (v.filho_esquerdo == null || v.filho_direito == null) { // Caso 2
+        } else if (v.filho_esquerdo == null || v.filho_direito == null) {
+            System.out.println("CASO 02 DE REMOÇÃO: ");
             Caso02remocao(v);
-        } else { // Caso 3
+        } else {
+            System.out.println("CASO 03 DE REMOÇÃO: ");
             Caso03remocao(v);
         }
         qtd_no--;
@@ -239,22 +242,33 @@ public class Arvore implements ArvoreInterface {
             return;
         }
         if (k.pai.filho_esquerdo == k) {
+            atualiza_FB_remocao(k.pai.filho_esquerdo);
             k.pai.filho_esquerdo = null;
         } else {
+            atualiza_FB_remocao(k.pai.filho_direito);
             k.pai.filho_direito = null;
         }
     }
 
     public void Caso02remocao(No k) {
-        No filho = (k.filho_esquerdo != null) ? k.filho_esquerdo : k.filho_direito;
+        No filho;
+        if(k.filho_esquerdo != null){
+            filho = k.filho_esquerdo;
+        }else{
+            filho = k.filho_direito;
+        }
         if (k.pai == null) {
             root = filho;
             root.pai = null;
         } else {
-            if (k.pai.filho_esquerdo == k)
+            if (k.pai.filho_esquerdo == k) {
+                atualiza_FB_remocao(k);
                 k.pai.filho_esquerdo = filho;
-            else
+            }
+            else {
+                atualiza_FB_remocao(k);
                 k.pai.filho_direito = filho;
+            }
             filho.pai = k.pai;
         }
     }
