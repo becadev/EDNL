@@ -31,7 +31,7 @@ public class Arvore implements ArvoreInterface {
         return this.qtd_no;
     }
     public int height(No v) {
-        if (v == null) return -1; // caso base
+        if (v == null) return 0; // caso base
 
         int h_esq = height(v.filho_esquerdo);
         int h_dir = height(v.filho_esquerdo);
@@ -131,8 +131,9 @@ public class Arvore implements ArvoreInterface {
             novo.pai.fb--;
         if(novo.pai != null && novo.pai.fb == 0)
             return novo;
-        if(novo.pai != null && ( novo.pai.fb >= 2 || novo.pai.fb <= -2))
-            balancear(novo,novo.pai);
+        if(novo.pai != null && ( novo.pai.fb == 2 || novo.pai.fb == -2)) {
+            balancear(novo, novo.pai);
+        }
         return atualiza_FB_insercao(novo.pai);
     }
 
@@ -153,36 +154,33 @@ public class Arvore implements ArvoreInterface {
 
     public void balancear(No atual, No antecessor) { // comparar se sao sinais iguais ou sinais diferentes
         if(atual.fb > 0 && antecessor.fb > 0) { // positivo = a rotação direita simples
+            System.out.println("Realizando RSD");
             rotacao_simples_direita(atual,antecessor);
+            return;
         }
         if(atual.fb > 0 && antecessor.fb < 0) { // primeiro faz a rotação do atual e depois a do antecessor
-            rotacao_simples_direita(atual, antecessor);
-            rotacao_simples_esquerda(antecessor, antecessor.pai);
+            // então a esquerda que ta desbalanceada
+            System.out.println("Realizando RDE");
+            rotacao_simples_direita(atual.filho_esquerdo, atual);
+            rotacao_simples_esquerda(atual.pai.filho_direito, atual.pai);
+            return;
         }
         if(atual.fb < 0 && antecessor.fb > 0) { // primeiro faz a rotação do atual e depois a do antecessor
-            rotacao_simples_esquerda(atual, antecessor);
-            rotacao_simples_direita(antecessor, antecessor.pai);
+            System.out.println("Realizando RDD");
+            rotacao_simples_esquerda(atual.filho_direito, atual);
+            rotacao_simples_direita(atual.pai.filho_esquerdo,atual.pai);
+            return;
         }
         if(atual.fb < 0 && antecessor.fb < 0) { // negativo = esquerda
+            System.out.println("Realizando RSE");
             rotacao_simples_esquerda(atual, antecessor);
         }
     }
 
-    /*
-    simples
-    antecessor vira filho e sua subarvore o acompanha
-    verifica se o atual filho era esquerdo ou direito,
-        se esquerdo: atual_filho.esquerdo == antecessor
-            salva o antigo filho.esquerdo do antecessor
-        se direito: atual_filho.direito == antecessor
-            salva o antigo filho.direito do antecessor
-     o resto da arvore permanece igual
-    */
-
     public void rotacao_simples_direita(No atual, No antecessor) {
         atual.pai = antecessor.pai;
         if(antecessor.pai != null ) { // caso o antecessor fosse raiz
-            antecessor.pai.filho_esquerdo = atual; // o filho esquerdo dele vai ser o atual
+            antecessor.pai.filho_direito = atual; // o filho esquerdo dele vai ser o atual
         }
 
         if(antecessor.pai == null) { // se o pai do antecessor for nulo é pq o antecessor é raiz12
@@ -190,31 +188,37 @@ public class Arvore implements ArvoreInterface {
         }
 
         if(atual.filho_direito != null) {
-            antecessor.filho_direito = atual.filho_direito; // salva e esse filho sera filho do antecessor
+            antecessor.filho_esquerdo = atual.filho_direito; // salva e esse filho  esquerdo atual e ele sera filho do antecessor
+        }else{
+            antecessor.filho_esquerdo = null;
         }
-        atual.filho_direito = atual;
+
+        atual.filho_direito = antecessor;
         antecessor.fb = antecessor.fb - 1 - max(atual.fb, 0);
         atual.fb = atual.fb - 1 + min(antecessor.fb, 0);
     }
 
-
     public void rotacao_simples_esquerda(No atual, No antecessor) {
         atual.pai = antecessor.pai;
-        if(antecessor.pai != null) // caso o antecessor nao for raiz
-            antecessor.pai.filho_direito = atual; // o filho direito dele vai ser o atual
+        if(antecessor.pai != null) {// caso o antecessor nao for raiz
+            antecessor.pai.filho_esquerdo = atual; // o filho direito dele vai ser o atual
+        }
 
         if(antecessor.pai == null) { // se o pai do antecessor for nulo é pq o antecessor é raiz
             this.root = atual;
         }
-        if(atual.filho_esquerdo != null) // se o atual tiver filho esquerdo
+
+        if(atual.filho_esquerdo != null) { // se o atual tiver filho esquerdo
             antecessor.filho_direito = atual.filho_esquerdo; // esse filho esquerdo agora sera filho direito do antecessor
+        }else{
+            antecessor.filho_direito = null;
+        }
 
         atual.filho_esquerdo = antecessor; // antecessor agora é filho do atual
         antecessor.fb = antecessor.fb + 1 - min(atual.fb, 0);
         atual.fb = atual.fb + 1 + max(antecessor.fb, 0);
     }
 
-    // remocao
     public void remocao(int k) {
         No v = treeSearch(k, root);
         if (v == null) return;
@@ -272,60 +276,55 @@ public class Arvore implements ArvoreInterface {
         return v;
     }
 
-
-
-    // Assumindo que a classe Arvore/AVL tem o método height(No) e isEmpty()
     public void imprimir() {
         if (isEmpty()) {
             System.out.println("(Árvore vazia)");
             return;
         }
 
-        int altura = height(root);
-        // Largura total: 2^(altura + 1) para ter espaço suficiente, ou 2^altura * 4
+        int altura = height(root) + 1;
+        //System.out.println(altura);
+        // elevado pra tem espaçamento suficiente
         int larguraTotal = (int) Math.pow(2, altura) * 4;
 
         java.util.Queue<No> fila = new java.util.LinkedList<>();
         fila.add(root);
-        int noNulls = 0; // Contador para saber se a fila só tem nulos
+        int noNulls = 0; // vai contar pra ver se a fila ta so com nulls
 
         for (int nivel = 0; nivel <= altura; nivel++) {
             int tamanho = fila.size();
 
-            // Se todos os elementos restantes na fila são nulos, podemos parar.
+            // se os nós da mesmo nivel for nulo ele ja para aqui mesmo
             if (noNulls == tamanho) break;
             noNulls = 0;
 
-            // Calcula o espaçamento
-            // O espacoAntes será o espaço lateral antes do primeiro nó
+
+            // o espaço lateral antes do primeiro no
             int espacoAntes = (larguraTotal / (int) Math.pow(2, nivel + 1));
-            // O espacoEntreNo será o espaço entre os nós do mesmo nível
+            // o espaço entre os nós do mesmo nivel
             int espacoEntreNo = (larguraTotal / (int) Math.pow(2, nivel));
 
-            // 1. Espaço inicial antes do primeiro nó
+            // espaço innicial dos nos
             printEspacos(espacoAntes);
 
             for (int i = 0; i < tamanho; i++) {
                 No atual = fila.poll();
 
                 if (atual != null) {
-                    // Imprime a chave e o FB sem quebra de linha (%n)
-                    // Use format("%-4s", ...) para garantir que a impressão tenha tamanho fixo (ex: 4)
-                    System.out.printf("%-4s", atual.chave + "[" + atual.fb + "]");
+                    System.out.printf("%-4s", atual.chave + "[" + atual.fb + "]"); // chave e o fb
 
                     fila.add(atual.filho_esquerdo);
                     fila.add(atual.filho_direito);
                 } else {
-                    // Imprime espaços no lugar do nó nulo para manter a estrutura
-                    System.out.printf("%-4s", "    "); // Ou use "    " (4 espaços)
+                    // mostraos espaços no lugar do no nulo para manter a estrutura
+                    System.out.printf("%-4s", "    ");
 
                     fila.add(null);
                     fila.add(null);
-                    noNulls++; // Conta o nó nulo
+                    noNulls++; // nos nulls
                 }
 
-                // 2. Espaço entre os nós do mesmo nível
-                // O último elemento de cada nível não precisa do espaçoEntreNo
+                // espaço dos nós da mesma linha
                 if (i < tamanho - 1) {
                     printEspacos(espacoEntreNo - 4); // subtrai o tamanho da string impressa
                 } else {
@@ -337,9 +336,8 @@ public class Arvore implements ArvoreInterface {
         }
     }
 
-    // função auxiliar printEspacos está correta:
     private void printEspacos(int qtd) {
-        // garante que a quantidade não seja negativa
+        // garante que a qtd não seja negativa
         qtd = Math.max(0, qtd);
         for (int i = 0; i < qtd; i++) {
             System.out.print(" ");

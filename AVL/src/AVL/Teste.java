@@ -4,9 +4,6 @@ import java.util.Scanner;
 
 public class Teste {
 
-    public static void newAvl() {
-        Arvore avl = new Arvore();
-    }
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
@@ -44,16 +41,18 @@ public class Teste {
             opcao = input.nextInt();
 
             if(opcao == 1) {// Rotação simples esquerda com inserção
-                newAvl();
+                avl = new Arvore();
                 avl.inserir(6);
                 avl.inserir(8);
                 avl.imprimir();
+                System.out.println();
+
                 avl.inserir(9);
                 System.out.println();
                 avl.imprimir();
             }
             if(opcao == 2) { // Rotação simples direita com inserção
-                newAvl();
+                avl = new Arvore();
                 avl.inserir(6);
                 avl.inserir(5);
                 avl.imprimir();
@@ -62,20 +61,72 @@ public class Teste {
                 avl.imprimir();
             }
             if(opcao == 3) { // Rotação simples esquerda com remoção caso 1
-                newAvl();
+                avl = new Arvore();
                 avl.inserir(30);
-                avl.inserir(20);
-                avl.inserir(40);
-                avl.inserir(10);
-                avl.inserir(50);
-                avl.inserir(25);
-                avl.remocao(10);
-                System.out.println();
                 avl.imprimir();
+                System.out.println();
+                avl.inserir(20);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(40);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(10);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(50);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(25);
+                avl.imprimir();
+                System.out.println();
+                avl.remocao(10);
+                avl.imprimir();
+                System.out.println();
             }
 
+            if(opcao == 9) {
+                avl = new Arvore();
+                avl.inserir(50);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(20);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(80);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(70);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(90);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(60);
+                avl.imprimir();
+                System.out.println();
+            }
 
-
+            if(opcao == 10) {
+                avl = new Arvore();
+                avl.inserir(50);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(20);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(90);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(10);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(40);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(30);
+                avl.imprimir();
+            }
         }while(opcao!=0);
         input.close();
 

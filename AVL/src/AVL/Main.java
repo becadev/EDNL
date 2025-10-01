@@ -153,7 +153,7 @@ public class Main {
             }
             if (opcao == 14) {
                 System.out.println("Imprimir árvore ");
-                avl.imprimir(avl.root());
+                avl.imprimir();
                 System.out.println();
             }
 
