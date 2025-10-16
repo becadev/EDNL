@@ -138,43 +138,67 @@ public class Arvore implements ArvoreInterface {
     }
 
     public No atualiza_FB_remocao(No no) {
-        if(no.chave < no.pai.chave)
-            no.pai.fb--;
-        if(no.chave > no.pai.chave)
-            no.pai.fb++;
+        System.out.println(no.chave);
+        if(no.chave < no.pai.chave){
+            System.out.println("remocao a esquerda");
+            System.out.println(no.pai.fb);
+            System.out.println(no.chave);
+            no.pai.fb--;}
+        if(no.chave > no.pai.chave){
+            System.out.println("remocao a direita");
+            System.out.println(no.pai.fb);
+            System.out.println(no.chave);
+            no.pai.fb++;}
+
         if(no.pai.fb >= 2 || no.pai.fb <= -2) {
+            System.out.println("caso de balanceamento");
+            System.out.println(no.pai.fb);
+            System.out.println(no.chave);
             balancear(no, no.pai);
             return no;
         }
-        if(no.pai.fb != 0)
-            return no;
+        if(no.pai.fb != 0){
+            System.out.println("caso de parada");
+            System.out.println(no.pai.fb);
+            System.out.println(no.chave);
+            return no;}
         return atualiza_FB_remocao(no.pai);
     }
 
 
     public void balancear(No atual, No antecessor) { // comparar se sao sinais iguais ou sinais diferentes
-        if(atual.fb > 0 && antecessor.fb > 0) { // positivo = a rotação direita simples
+        System.out.println("atual fb" + atual.fb +  "  " + atual.chave);
+        System.out.println("antecessor fb" + antecessor.fb + "  " + antecessor.chave);
+        if(atual.fb >= 0 && antecessor.fb > 0) { // positivo = a rotação direita simples
             System.out.println("Realizando RSD");
             rotacao_simples_direita(atual,antecessor);
             return;
         }
-        if(atual.fb > 0 && antecessor.fb < 0) { // primeiro faz a rotação do atual e depois a do antecessor
+        if(atual.fb >= 0 && antecessor.fb < 0) { // primeiro faz a rotação do atual e depois a do antecessor
             // então a esquerda que ta desbalanceada
             System.out.println("Realizando RDE");
             rotacao_simples_direita(atual.filho_esquerdo, atual);
+            imprimir();
+            System.out.println("is here");
+            System.out.println(atual.pai.filho_direito.chave);
+            System.out.println(atual.pai.chave);
+            imprimir();
             rotacao_simples_esquerda(atual.pai.filho_direito, atual.pai);
             return;
         }
-        if(atual.fb < 0 && antecessor.fb > 0) { // primeiro faz a rotação do atual e depois a do antecessor
+        if(atual.fb <= 0 && antecessor.fb > 0) { // primeiro faz a rotação do atual e depois a do antecessor
             System.out.println("Realizando RDD");
             rotacao_simples_esquerda(atual.filho_direito, atual);
             rotacao_simples_direita(atual.pai.filho_esquerdo,atual.pai);
             return;
         }
-        if(atual.fb < 0 && antecessor.fb < 0) { // negativo = esquerda
+        if(atual.fb <= 0 && antecessor.fb < 0) { // negativo = esquerda
             System.out.println("Realizando RSE");
             rotacao_simples_esquerda(atual, antecessor);
+            return;
         }
+        System.out.println("OXe nenhum");
+
     }
 
     public void rotacao_simples_direita(No atual, No antecessor) {
@@ -223,15 +247,15 @@ public class Arvore implements ArvoreInterface {
         No v = treeSearch(k, root);
         if (v == null) return;
 
-        if (isExternal(v)) {
+        if (isExternal(v)) { // nao tem filhos
             System.out.println("CASO 01 DE REMOÇÃO: ");
             Caso01remocao(v);
-        } else if (v.filho_esquerdo == null || v.filho_direito == null) {
+        } else if (v.filho_esquerdo == null || v.filho_direito == null) { // tem um filho
             System.out.println("CASO 02 DE REMOÇÃO: ");
             Caso02remocao(v);
         } else {
-            System.out.println("CASO 03 DE REMOÇÃO: ");
-            Caso03remocao(v);
+            System.out.println("CASO 03 DE REMOÇÃO: "); 
+            Caso03remocao(v); // tem 2 filhos
         }
         qtd_no--;
     }
@@ -276,7 +300,8 @@ public class Arvore implements ArvoreInterface {
     public void Caso03remocao(No v) {
         No substituto = maiorMenor(v.filho_direito);
         v.chave = substituto.chave;
-        if (isExternal(substituto)) {
+
+        if (isExternal(substituto)) { // remocao fisica do maior menor
             Caso01remocao(substituto);
         } else {
             Caso02remocao(substituto);
