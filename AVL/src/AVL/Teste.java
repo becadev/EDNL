@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 public class Teste {
 
-
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         Arvore avl = new Arvore();
@@ -61,34 +60,49 @@ public class Teste {
             }
             if(opcao == 2) { // Rotação simples direita com inserção
                 avl = new Arvore();
-                avl.inserir(6);
-                avl.inserir(5);
+                // avl.inserir(6);
+                // avl.inserir(5);
+                // avl.imprimir();
+                // avl.inserir(2);
+                // System.out.println();
+                // avl.imprimir();
+                avl.inserir(50);
+                avl.inserir(70);
                 avl.imprimir();
-                avl.inserir(2);
+                avl.inserir(60);
                 System.out.println();
                 avl.imprimir();
             }
 
             if(opcao == 3) { // Teste rotação dupla esquerda com inserção
+                // avl = new Arvore();
+                // avl.inserir(50);
+                // avl.imprimir();
+                // System.out.println();
+                // avl.inserir(20);
+                // avl.imprimir();
+                // System.out.println();
+                // avl.inserir(80);
+                // avl.imprimir();
+                // System.out.println();
+                // avl.inserir(70);
+                // avl.imprimir();
+                // System.out.println();
+                // avl.inserir(90);
+                // avl.imprimir();
+                // System.out.println();
+                // avl.inserir(60);
+                // avl.imprimir();
+                // System.out.println();
                 avl = new Arvore();
-                avl.inserir(50);
-                avl.imprimir();
-                System.out.println();
-                avl.inserir(20);
-                avl.imprimir();
-                System.out.println();
-                avl.inserir(80);
-                avl.imprimir();
-                System.out.println();
-                avl.inserir(70);
-                avl.imprimir();
-                System.out.println();
-                avl.inserir(90);
-                avl.imprimir();
-                System.out.println();
-                avl.inserir(60);
-                avl.imprimir();
-                System.out.println();
+                System.out.println("Inserções das chaves 40,25,50,10,35,30,20,70 e 60");
+                int[] chaves_inseridas = {40,25,50,10,35,30,20,70};
+                for(int chave:chaves_inseridas){
+                    System.out.printf("inserindo a chave %d%n: ", chave);
+                    avl.inserir(chave);
+                    avl.imprimir();
+                    System.out.println();
+                }
             }
 
             if(opcao == 4) { // Teste rotação dupla direita com inserção
@@ -132,46 +146,72 @@ public class Teste {
                 avl.inserir(25);
                 avl.imprimir();
                 System.out.println();
+                System.out.println("removendo chave 10");
                 avl.remocao(10);
                 avl.imprimir();
                 System.out.println();
             }
-            if(opcao == 17) {
+            if(opcao == 6) { // Rotação simples esquerda com remoção caso 2
                 avl = new Arvore();
-                System.out.println("Inserções das chaves 30,20,50,10,25,40,70,35,60,80");
                 avl.inserir(30);
                 avl.imprimir();
                 System.out.println();
                 avl.inserir(20);
                 avl.imprimir();
                 System.out.println();
-                avl.inserir(50);
+                avl.inserir(40);
                 avl.imprimir();
                 System.out.println();
                 avl.inserir(10);
                 avl.imprimir();
                 System.out.println();
-                avl.inserir(25);
+                avl.inserir(50);
+                avl.imprimir();
+                System.out.println();
+                System.out.println("removendo chave 20");
+                avl.remocao(20);
+                avl.imprimir();
+                System.out.println();
+            }
+            if(opcao == 7) { // Rotação simples esquerda com remoção caso 3
+                avl = new Arvore();
+                avl.inserir(30);
+                avl.imprimir();
+                System.out.println();
+                avl.inserir(20);
                 avl.imprimir();
                 System.out.println();
                 avl.inserir(40);
                 avl.imprimir();
                 System.out.println();
-                avl.inserir(70);
+                avl.inserir(10);
                 avl.imprimir();
                 System.out.println();
-                avl.inserir(35);
-                avl.imprimir();
-                avl.inserir(60);
+                avl.inserir(50);
                 avl.imprimir();
                 System.out.println();
-                avl.inserir(80);
+                avl.inserir(25);
                 avl.imprimir();
                 System.out.println();
+                System.out.println("removendo chave 20");
+                avl.remocao(20);
+                avl.imprimir();
+                System.out.println();
+            }
 
-                int[] chaves_remocao = {40, 25, 50, 10, 35, 30, 20, 70, 60};
-                for(int chave : chaves_remocao) {
+            if(opcao == 17) {
+                avl = new Arvore();
+                System.out.println("Inserções das chaves 40,25,50,10,35,30,20,70 e 60");
+                int[] chaves_inseridas = {40,25,50,10,35,30,20,70,60};
+                for(int chave:chaves_inseridas){
+                    System.out.printf("inserindo a chave %d%n: ", chave);
+                    avl.inserir(chave);
+                    avl.imprimir();
+                    System.out.println();
+                }
+                for(int chave : chaves_inseridas) {
                     System.out.printf("Remoção da chave %d%n: ", chave);
+                    avl.imprimir();
                     avl.remocao(chave);
                     avl.imprimir();
                     System.out.println();
