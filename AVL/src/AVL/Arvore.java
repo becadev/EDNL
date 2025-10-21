@@ -38,7 +38,7 @@ public class Arvore implements ArvoreInterface {
         if (v == null)
             return 0; // caso base
         int h_esq = height(v.filho_esquerdo);
-        int h_dir = height(v.filho_esquerdo);
+        int h_dir = height(v.filho_direito);
         return max(h_esq, h_dir) + 1;
     }
 
@@ -184,6 +184,8 @@ public class Arvore implements ArvoreInterface {
     }
 
     public void balancear(No atual, No antecessor) { // comparar se sao sinais iguais ou sinais diferentes
+        if (atual == null)
+            return;
         if ( atual.fb > 0 && antecessor.fb >= 2) { // positivo = a rotação direita simples
             System.out.println("Realizando RSD");
             rotacao_simples_direita(atual, antecessor);
