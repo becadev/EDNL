@@ -135,15 +135,14 @@ public class Arvore implements ArvoreInterface {
         if (atual == null || atual.pai == null) {
             return atual;
         }
+        if (atual != null && atual.fb == 0)
+            return atual;
 
         if (atual.chave < atual.pai.chave)
             atual.pai.fb++;
 
         if (atual.chave > atual.pai.chave)
             atual.pai.fb--;
-        
-        if (atual.pai != null && atual.pai.fb == 0)
-            return atual;
 
         if (atual.pai != null && (atual.pai.fb >= 2 || atual.pai.fb <= -2)) {
             System.out.println("Antes do balancemento");
@@ -158,17 +157,17 @@ public class Arvore implements ArvoreInterface {
         No pai = atual.pai;
         if(pai == null) 
             return atual;
-        if(pai != null) {
-            if (atual.fb != 0 && (atual.fb < 2 && atual.fb > -2 )){ // caso base
-                return atual;
-            }
-            if (atual.chave < pai.chave){
-                pai.fb--;
-            }
 
-            if (atual.chave > pai.chave) {
-                pai.fb++;
-            }
+        if (atual.fb != 0 && (atual.fb < 2 && atual.fb > -2 )){ // caso base
+            return atual;
+        }
+
+        if (atual.chave < pai.chave){
+            pai.fb--;
+        }
+
+        if (atual.chave > pai.chave) {
+            pai.fb++;
         }
         
         if (pai.fb >= 2 || pai.fb <= -2) {
@@ -330,7 +329,7 @@ public class Arvore implements ArvoreInterface {
     public void Caso03remocao(No v) {
         No substituto = maiorMenor(v.filho_direito);
         No old_pai_substituo = substituto.pai;
-        atualiza_FB_remocao(substituto);
+        atualiza_FB_remocao(substituto); // remoção fisica
         v.chave = substituto.chave;
         if((old_pai_substituo.filho_direito != null) && 
             old_pai_substituo.filho_direito.chave == substituto.chave){
@@ -377,7 +376,8 @@ public class Arvore implements ArvoreInterface {
            
             for (int j = 0; j < colunas; j++){
                 if (AVL[i][j] == null){
-                    System.out.print("  ");
+                    System.out.print(" "); 
+                    // \t
                 } else {
                     System.out.printf("%2s", AVL[i][j]);
                 }
