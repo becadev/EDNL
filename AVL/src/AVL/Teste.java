@@ -54,21 +54,21 @@ public class Teste {
         avl = new Arvore();
         System.out.println("Teste 6");
         System.out.println("Inserções das chaves 40,25,50,10,35,30,20,70 e 60");
-        int [] chaves_inseridas2 = {40,25,50,10,35,30,20,70,60};
+        int [] chaves_inseridas2 = {40,25,50,10,35,30,20,70};
         for(int chave:chaves_inseridas2){
             System.out.printf("inserindo chave %d%n", chave);
             avl.inserir(chave);
             avl.imprimir();
         }
-        System.out.println("Remoção chave 40");
-        avl.remocao(40);
-        avl.imprimir();
-        System.out.println();
+        // System.out.println("Remoção chave 40");
+        // avl.remocao(40);
+        // avl.imprimir();
+        // System.out.println();
 
-        System.out.println("Remoção chave 60");
-        avl.remocao(60);
-        avl.imprimir();
-        System.out.println();
+        // System.out.println("Remoção chave 60");
+        // avl.remocao(60);
+        // avl.imprimir();
+        // System.out.println();
 
 
 

@@ -149,6 +149,7 @@ public class Arvore implements ArvoreInterface {
             imprimir();
             System.out.println();
             balancear(atual, atual.pai);
+            return atual;
         }
         return atualiza_FB_insercao(atual.pai);
     }
@@ -215,6 +216,7 @@ public class Arvore implements ArvoreInterface {
             imprimir();
             System.out.println("Realizando RSE");
             rotacao_simples_esquerda(atual, antecessor);
+            return;
         }
     }
 
@@ -267,7 +269,8 @@ public class Arvore implements ArvoreInterface {
         } else {
             antecessor.filho_direito = null;
         }
-
+        System.out.println("dentro de rse");
+        imprimir();
         atual.filho_esquerdo = antecessor; // antecessor agora é filho do atual
         antecessor.fb = antecessor.fb + 1 - min(atual.fb, 0);
         atual.fb = atual.fb + 1 + max(antecessor.fb, 0);
