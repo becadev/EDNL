@@ -3,11 +3,11 @@ package AVL;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-public class Arvore implements ArvoreInterface {
+public class AVL implements ArvoreInterface {
     protected No root;
     protected int qtd_no;
 
-    Arvore() {
+    AVL() {
         this.root = null;
         this.qtd_no = 0;
     }
@@ -114,6 +114,9 @@ public class Arvore implements ArvoreInterface {
                 antecessor.filho_esquerdo = atual;
                 atual.pai = antecessor;
                 atual.pai.fb++;
+                System.out.println("soma fb pai");
+                System.out.println(atual.chave + " " + atual.pai.chave);
+                imprimir();
                 atualiza_FB_insercao(atual.pai);
             } else {
                 insercao(antecessor.filho_esquerdo, atual);
@@ -123,6 +126,9 @@ public class Arvore implements ArvoreInterface {
                 antecessor.filho_direito = atual;
                 atual.pai = antecessor;
                 atual.pai.fb--;
+                System.out.println("sub fb pai");
+                System.out.println(atual.chave + " " + atual.pai.chave);
+                imprimir();
                 atualiza_FB_insercao(atual.pai);
             } else {
                 insercao(antecessor.filho_direito, atual);
@@ -130,19 +136,20 @@ public class Arvore implements ArvoreInterface {
         }
     }
 
-    // função para balancear
-    public No atualiza_FB_insercao(No atual) {
+    public No atualiza_FB_insercao(No atual) {// balancea os fb de remocao
         if (atual == null || atual.pai == null) {
             return atual;
         }
-        if (atual != null && atual.fb == 0)
-            return atual;
+        if (atual != null && atual.fb == 0){
+            return atual;}
 
-        if (atual.chave < atual.pai.chave)
+        if (atual.chave < atual.pai.chave){
             atual.pai.fb++;
+        }
 
-        if (atual.chave > atual.pai.chave)
+        if (atual.chave > atual.pai.chave){
             atual.pai.fb--;
+        }
 
         if (atual.pai != null && (atual.pai.fb >= 2 || atual.pai.fb <= -2)) {
             System.out.println("Antes do balancemento");
@@ -155,30 +162,34 @@ public class Arvore implements ArvoreInterface {
     }
 
     public No atualiza_FB_remocao(No atual) {
+        if (atual == null) {
+            No aux = new No(0); // só para poder para qunaod for null
+            return aux;
+        }
+        if (atual.fb >= 2 || atual.fb <= -2) {
+            if(atual.fb >= 2){ // desbalanceou pra esq
+                balancear(atual.filho_esquerdo, atual);}
+            else if(atual.fb <= -2){ // desbalanceou pra dir
+                balancear(atual.filho_direito, atual);}
+            return atual;
+        }
+            
         No pai = atual.pai;
-        if(pai == null) 
-            return atual;
-
-        if (atual.fb != 0 && (atual.fb < 2 && atual.fb > -2 )){ // caso base
-            return atual;
-        }
-
-        if (atual.chave < pai.chave){
-            pai.fb--;
-        }
-
-        if (atual.chave > pai.chave) {
-            pai.fb++;
-        }
-        
-        if (pai.fb >= 2 || pai.fb <= -2) {
-            if(pai.fb >= 2){ // desbalanceou pra esq
+        if (pai != null ) {
+            if (pai.fb != 0 && (pai.fb < 2 && pai.fb > -2 )){ // caso base
                 imprimir();
-                balancear(pai.filho_esquerdo, pai);}
-            else if(pai.fb <= -2){ // desbalanceou pra dir
+                return atual;
+            }
+
+            if (atual.chave < pai.chave){
+                pai.fb--;
                 imprimir();
-                balancear(pai.filho_direito, pai);}
-            return atual;
+            }
+
+            if (atual.chave > pai.chave) {
+                pai.fb++;
+                imprimir();
+            }
         }
         return atualiza_FB_remocao(pai);
     }
@@ -200,7 +211,8 @@ public class Arvore implements ArvoreInterface {
             rotacao_simples_direita(atual.filho_esquerdo, atual);
             imprimir();
             System.out.println("2ª rotação: esquerda");
-            rotacao_simples_esquerda(atual.pai, atual.pai.pai);
+            rotacao_simples_esquerda(antecessor.filho_direito, antecessor);
+            balancear(atual, antecessor);
             return;
         }
         if (atual.fb < 0 && antecessor.fb >= 2) { // primeiro faz a rotação do atual e depois a do antecessor
@@ -229,11 +241,10 @@ public class Arvore implements ArvoreInterface {
                 vo.filho_esquerdo = A;
             }
             A.pai = vo;
-            B.pai = A;
-        } else{ // se o pai do B for nulo é pq o B é raiz
+            
+        }else{ // se o pai do B for nulo é pq o B é raiz
             this.root = A;
             A.pai = null;
-            B.pai =  A;
         }
         if (A.filho_direito != null) {
             B.filho_esquerdo = A.filho_direito; // salva e esse filho esquerdo A e ele sera filho do B
@@ -241,8 +252,8 @@ public class Arvore implements ArvoreInterface {
         } else {
             B.filho_esquerdo = null;
         }
-        
         A.filho_direito = B;
+        B.pai = A;
         B.fb = B.fb - 1 - max(A.fb, 0);
         A.fb = A.fb - 1 + min(B.fb, 0);
     }
@@ -256,11 +267,9 @@ public class Arvore implements ArvoreInterface {
                 vo.filho_esquerdo = atual; 
             }
             atual.pai = vo;
-            antecessor.pai = atual;
         }else{// se vo for nulo é pq o antecessor era raiz
             this.root = atual;
             atual.pai = null;
-            antecessor.pai = atual;
         }
 
         if (atual.filho_esquerdo != null) { // se o atual tiver filho esquerdo 
@@ -269,9 +278,8 @@ public class Arvore implements ArvoreInterface {
         } else {
             antecessor.filho_direito = null;
         }
-        System.out.println("dentro de rse");
-        imprimir();
         atual.filho_esquerdo = antecessor; // antecessor agora é filho do atual
+        antecessor.pai = atual;
         antecessor.fb = antecessor.fb + 1 - min(atual.fb, 0);
         atual.fb = atual.fb + 1 + max(antecessor.fb, 0);
     }
@@ -299,33 +307,39 @@ public class Arvore implements ArvoreInterface {
             return;
         }
         if (k.pai.filho_esquerdo == k) {
-            atualiza_FB_remocao(k);
+            k.pai.fb--;
             k.pai.filho_esquerdo = null;
+            atualiza_FB_remocao(k.pai);
+            
         } else {
-            atualiza_FB_remocao(k);
+            k.pai.fb++;
             k.pai.filho_direito = null;
+            atualiza_FB_remocao(k.pai);
+           
         }
     }
 
-    public void Caso02remocao(No k) {
+    public void Caso02remocao(No removido) {
         No filho;
-        if (k.filho_esquerdo != null) {
-            filho = k.filho_esquerdo;
+        if (removido.filho_esquerdo != null) {
+            filho = removido.filho_esquerdo;
         } else {
-            filho = k.filho_direito;
+            filho = removido.filho_direito;
         }
-        if (k.pai == null) {
+        if (removido.pai == null) {
             root = filho;
             root.pai = null;
         } else {
-            if (k.pai.filho_esquerdo == k) {
-                k.pai.filho_esquerdo = filho;
-                atualiza_FB_remocao(k); 
+            if (removido.pai.filho_esquerdo == removido) {
+                removido.pai.filho_esquerdo = filho;
+                removido.pai.fb--;
+                atualiza_FB_remocao(removido.pai); 
             } else{
-                k.pai.filho_direito = filho;
-                atualiza_FB_remocao(k); 
+                removido.pai.filho_direito = filho;
+                removido.pai.fb++;
+                atualiza_FB_remocao(removido.pai); 
             }
-            filho.pai = k.pai;
+            filho.pai = removido.pai;
         }
     }
 
