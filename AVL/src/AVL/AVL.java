@@ -114,9 +114,6 @@ public class AVL implements ArvoreInterface {
                 antecessor.filho_esquerdo = atual;
                 atual.pai = antecessor;
                 atual.pai.fb++;
-                System.out.println("soma fb pai");
-                System.out.println(atual.chave + " " + atual.pai.chave);
-                imprimir();
                 atualiza_FB_insercao(atual.pai);
             } else {
                 insercao(antecessor.filho_esquerdo, atual);
@@ -126,9 +123,6 @@ public class AVL implements ArvoreInterface {
                 antecessor.filho_direito = atual;
                 atual.pai = antecessor;
                 atual.pai.fb--;
-                System.out.println("sub fb pai");
-                System.out.println(atual.chave + " " + atual.pai.chave);
-                imprimir();
                 atualiza_FB_insercao(atual.pai);
             } else {
                 insercao(antecessor.filho_direito, atual);
@@ -168,71 +162,68 @@ public class AVL implements ArvoreInterface {
         }
         if (atual.fb >= 2 || atual.fb <= -2) {
             if(atual.fb >= 2){ // desbalanceou pra esq
-                balancear(atual.filho_esquerdo, atual);}
+                atual = balancear(atual.filho_esquerdo, atual);
+            }
             else if(atual.fb <= -2){ // desbalanceou pra dir
-                balancear(atual.filho_direito, atual);}
-            return atual;
+                atual = balancear(atual.filho_direito, atual);
+            }
         }
             
         No pai = atual.pai;
         if (pai != null ) {
             if (pai.fb != 0 && (pai.fb < 2 && pai.fb > -2 )){ // caso base
-                imprimir();
                 return atual;
             }
 
             if (atual.chave < pai.chave){
                 pai.fb--;
-                imprimir();
             }
 
             if (atual.chave > pai.chave) {
                 pai.fb++;
-                imprimir();
             }
         }
         return atualiza_FB_remocao(pai);
     }
 
-    public void balancear(No atual, No antecessor) { // comparar se sao sinais iguais ou sinais diferentes
-        if (atual == null)
-            return;
-        if ( atual.fb > 0 && antecessor.fb >= 2) { // positivo = a rotação direita simples
-            System.out.println("Realizando RSD");
-            rotacao_simples_direita(atual, antecessor);
-            return;
+    public No balancear(No atual, No antecessor) { // comparar se sao sinais iguais ou sinais diferentes
+        if (atual != null){
+            if ( atual.fb > 0 && antecessor.fb >= 2) { // positivo = a rotação direita simples
+                System.out.println("Realizando RSD");
+                rotacao_simples_direita(atual, antecessor);
+                return antecessor;
+            }
+            if (atual.fb > 0 && antecessor.fb <= -2) {
+                // primeiro faz a rotação do atual e depois a do antecessor
+                // então a esquerda que ta desbalanceada
+                System.out.println("Realizando RDE");
+                System.out.println("1ª rotação: direira");
+                rotacao_simples_direita(atual.filho_esquerdo, atual);
+                imprimir();
+                System.out.println("2ª rotação: esquerda");
+                atual = rotacao_simples_esquerda(antecessor.filho_direito, antecessor);
+                return atual;
+            }
+            if (atual.fb < 0 && antecessor.fb >= 2) { // primeiro faz a rotação do atual e depois a do antecessor
+                System.out.println("Realizando RDD");
+                System.out.println("1ª rotação: esquerda");
+                rotacao_simples_esquerda(atual.filho_direito, atual);
+                imprimir();
+                System.out.println("2ª rotação: direita");
+                atual = rotacao_simples_direita(antecessor.filho_esquerdo, antecessor);
+                return atual;
+            }
+            if ( atual.fb < 0 && antecessor.fb <= -2) { // negativo = esquerda 
+                imprimir();
+                System.out.println("Realizando RSE");
+                rotacao_simples_esquerda(atual, antecessor);
+                return antecessor;
+            }
         }
-        if (atual.fb > 0 && antecessor.fb <= -2) {
-            // primeiro faz a rotação do atual e depois a do antecessor
-            // então a esquerda que ta desbalanceada
-            System.out.println("Realizando RDE");
-
-            System.out.println("1ª rotação: direita");
-            rotacao_simples_direita(atual.filho_esquerdo, atual);
-            imprimir();
-            System.out.println("2ª rotação: esquerda");
-            rotacao_simples_esquerda(antecessor.filho_direito, antecessor);
-            balancear(atual, antecessor);
-            return;
-        }
-        if (atual.fb < 0 && antecessor.fb >= 2) { // primeiro faz a rotação do atual e depois a do antecessor
-            System.out.println("Realizando RDD");
-            System.out.println("1ª rotação: esquerda");
-            rotacao_simples_esquerda(atual.filho_direito, atual);
-            imprimir();
-            System.out.println("2ª rotação: direita");
-            rotacao_simples_direita(antecessor.filho_esquerdo, antecessor);
-            return;
-        }
-        if ( atual.fb < 0 && antecessor.fb <= -2) { // negativo = esquerda 
-            imprimir();
-            System.out.println("Realizando RSE");
-            rotacao_simples_esquerda(atual, antecessor);
-            return;
-        }
+        return atual;
     }
 
-    public void rotacao_simples_direita(No A, No B) {
+    public No rotacao_simples_direita(No A, No B) {
         No vo = B.pai;
         if (vo != null) { // caso o B n for raiz 
             if(vo.filho_direito.chave == B.chave){
@@ -256,9 +247,10 @@ public class AVL implements ArvoreInterface {
         B.pai = A;
         B.fb = B.fb - 1 - max(A.fb, 0);
         A.fb = A.fb - 1 + min(B.fb, 0);
+        return A;
     }
 
-    public void rotacao_simples_esquerda(No atual, No antecessor) {
+    public No rotacao_simples_esquerda(No atual, No antecessor) {
         No vo = antecessor.pai;
         if (vo != null) { // caso o antecessor nao for raiz 
             if(vo.filho_direito!=null && vo.filho_direito.chave == antecessor.chave) { // verifica para coisar casos espelhados
@@ -282,6 +274,7 @@ public class AVL implements ArvoreInterface {
         antecessor.pai = atual;
         antecessor.fb = antecessor.fb + 1 - min(atual.fb, 0);
         atual.fb = atual.fb + 1 + max(antecessor.fb, 0);
+        return atual;
     }
 
     public void remocao(int k) {
@@ -382,8 +375,8 @@ public class AVL implements ArvoreInterface {
     }
 
     public void imprimir(){
-        int altura = height(this.root) + 1; // mais um pra n começar do 0
-        int linha = altura + 1;
+        int altura = height(this.root)+2; // mais um pra n começar do 0
+        int linha = altura+1;
         int colunas = (int) Math.pow(2, altura) * 2; ;  // qtd nos por nivel em AB * qtd de espaço entre os nos
 
         Object[][] AVL = new Object[linha][colunas];
@@ -396,7 +389,7 @@ public class AVL implements ArvoreInterface {
                     System.out.print(" "); 
                     // \t
                 } else {
-                    System.out.printf("%2s", AVL[i][j]);
+                    System.out.printf("%s", AVL[i][j]);
                 }
             }
             System.out.println();
