@@ -191,7 +191,7 @@ public class AVL implements ArvoreInterface {
             if ( atual.fb > 0 && antecessor.fb >= 2) { // positivo = a rotação direita simples
                 System.out.println("Realizando RSD");
                 rotacao_simples_direita(atual, antecessor);
-                return antecessor;
+                return atual;
             }
             if (atual.fb > 0 && antecessor.fb <= -2) {
                 // primeiro faz a rotação do atual e depois a do antecessor
@@ -217,7 +217,7 @@ public class AVL implements ArvoreInterface {
                 imprimir();
                 System.out.println("Realizando RSE");
                 rotacao_simples_esquerda(atual, antecessor);
-                return antecessor;
+                return atual;
             }
         }
         return atual;
@@ -249,6 +249,7 @@ public class AVL implements ArvoreInterface {
         A.fb = A.fb - 1 + min(B.fb, 0);
         return A;
     }
+    
 
     public No rotacao_simples_esquerda(No atual, No antecessor) {
         No vo = antecessor.pai;

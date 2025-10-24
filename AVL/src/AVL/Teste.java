@@ -61,14 +61,14 @@ public class Teste {
         avl.imprimir();
         System.out.println();
 
-        // System.out.println("Remoção chave 60");
-        // avl.remocao(60);
-        // avl.imprimir();
-        // System.out.println();
+        System.out.println("Remoção chave 60");
+        avl.remocao(60);
+        avl.imprimir();
+        System.out.println();
 
-        // System.out.println("Remoção chave 70");
-        // avl.remocao(70);
-        // avl.imprimir();
-        // System.out.println();
+        System.out.println("Remoção chave 70");
+        avl.remocao(70);
+        avl.imprimir();
+        System.out.println();
     }
 }
