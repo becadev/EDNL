@@ -3,15 +3,15 @@ package AVL;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import java.util.List;
+import ABP.*;
 
-public class AVL implements ArvoreInterface {
+public class AVL extends ArvoreABP {
     protected No root;
     protected int qtd_no;
     protected List<Integer> arvore;
 
-    AVL() {
-        this.root = null;
-        this.qtd_no = 0;
+    public AVL() {
+        super();
     }
 
     // Métodos da AB
@@ -53,8 +53,8 @@ public class AVL implements ArvoreInterface {
         return this.root;
     }
 
-    public No parent(int k) {
-        No no = treeSearch(k, this.root);
+    public NoABP parent(int k) {
+        No no = (No)treeSearch(k, this.root);
         if (no == null || isRoot(no))
             return null;
         return no.pai;
@@ -84,50 +84,55 @@ public class AVL implements ArvoreInterface {
 
     // Métodos de atualização
     public void replace(No no, int o) {
-        no.setChave(o);
+        no.chave = o;
     }
 
     // Método de busca
-    public No treeSearch(int k, No v) {
+    public NoABP treeSearch(int k, NoABP v) {
         if (v == null)
             return null;
         if (k == v.chave)
             return v;
         if (k < v.chave)
-            return treeSearch(k, v.filho_esquerdo);
-        return treeSearch(k, v.filho_direito);
+            return (No)treeSearch(k, v.filho_esquerdo);
+        return (No)treeSearch(k, v.filho_direito);
     }
 
+    @Override
     public No inserir(int v) {
         No novo = new No(v);
         if (this.root == null) {
             this.root = novo;
         } else {
-            insercao(root, novo);
+            insercao((NoABP)root, (NoABP)novo);
         }
         qtd_no++;
         return novo;
     }
 
     // inserção recursiva
-    public void insercao(No antecessor, No atual) {
+    @Override
+    public void insercao(NoABP nantecessor, NoABP natual) {
+        No antecessor = (No) nantecessor;
+        No atual = (No) natual;
+
         if (atual.chave < antecessor.chave) {
             if (antecessor.filho_esquerdo == null) {
-                antecessor.filho_esquerdo = atual;
+                antecessor.filho_esquerdo = (No) atual;
                 atual.pai = antecessor;
-                atual.pai.fb++;
-                atualiza_FB_insercao(atual.pai);
+                ((No)atual.pai).fb++;
+                atualiza_FB_insercao((No)atual.pai);
             } else {
-                insercao(antecessor.filho_esquerdo, atual);
+                insercao(antecessor.filho_esquerdo,(No)atual);
             }
         } else if (atual.chave > antecessor.chave) {
             if (antecessor.filho_direito == null) {
                 antecessor.filho_direito = atual;
                 atual.pai = antecessor;
-                atual.pai.fb--;
-                atualiza_FB_insercao(atual.pai);
+                ((No)atual.pai).fb--;
+                atualiza_FB_insercao((No)atual.pai);
             } else {
-                insercao(antecessor.filho_direito, atual);
+                insercao((No)antecessor.filho_direito, (No)atual);
             }
         }
     }
@@ -140,38 +145,39 @@ public class AVL implements ArvoreInterface {
             return atual;}
 
         if (atual.chave < atual.pai.chave){
-            atual.pai.fb++;
+            ((No)atual.pai).fb++;
         }
 
         if (atual.chave > atual.pai.chave){
-            atual.pai.fb--;
+            ((No)atual.pai).fb--;
         }
 
-        if (atual.pai != null && (atual.pai.fb >= 2 || atual.pai.fb <= -2)) {
+        if (atual.pai != null && (((No)atual.pai).fb >= 2 || ((No)atual.pai).fb <= -2)) {
             System.out.println("Antes do balancemento");
-            imprimir();
+            mostrar();
             System.out.println();
-            balancear(atual, atual.pai);
+            balancear((No)atual, (No)atual.pai);
             return atual;
         }
-        return atualiza_FB_insercao(atual.pai);
+        return atualiza_FB_insercao((No)atual.pai);
     }
 
     public No atualiza_FB_remocao(No atual) {
+
         if (atual == null) {
             No aux = new No(0); // só para poder para qunaod for null
             return aux;
         }
         if (atual.fb >= 2 || atual.fb <= -2) {
             if(atual.fb >= 2){ // desbalanceou pra esq
-                atual = balancear(atual.filho_esquerdo, atual);
+                atual = balancear((No)atual.filho_esquerdo,(No)atual);
             }
             else if(atual.fb <= -2){ // desbalanceou pra dir
-                atual = balancear(atual.filho_direito, atual);
+                atual = balancear((No)atual.filho_direito, (No)atual);
             }
         }
             
-        No pai = atual.pai;
+        No pai = (No) atual.pai;
         if (pai != null ) {
             if (pai.fb != 0 && (pai.fb < 2 && pai.fb > -2 )){ // caso base
                 return atual;
@@ -200,25 +206,25 @@ public class AVL implements ArvoreInterface {
                 // então a esquerda que ta desbalanceada
                 System.out.println("Realizando RDE");
                 System.out.println("1ª rotação: direira");
-                rotacao_simples_direita(atual.filho_esquerdo, atual);
-                imprimir();
+                rotacao_simples_direita((No)atual.filho_esquerdo, (No)atual);
+                mostrar();
                 System.out.println("2ª rotação: esquerda");
-                atual = rotacao_simples_esquerda(antecessor.filho_direito, antecessor);
+                atual = rotacao_simples_esquerda((No)antecessor.filho_direito, (No)antecessor);
                 return atual;
             }
             if (atual.fb < 0 && antecessor.fb >= 2) { // primeiro faz a rotação do atual e depois a do antecessor
                 System.out.println("Realizando RDD");
                 System.out.println("1ª rotação: esquerda");
-                rotacao_simples_esquerda(atual.filho_direito, atual);
-                imprimir();
+                rotacao_simples_esquerda((No)atual.filho_direito,(No) atual);
+                mostrar();
                 System.out.println("2ª rotação: direita");
-                atual = rotacao_simples_direita(antecessor.filho_esquerdo, antecessor);
+                atual = rotacao_simples_direita((No)antecessor.filho_esquerdo,(No)antecessor);
                 return atual;
             }
             if ( atual.fb < 0 && antecessor.fb <= -2) { // negativo = esquerda 
-                imprimir();
+                mostrar();
                 System.out.println("Realizando RSE");
-                rotacao_simples_esquerda(atual, antecessor);
+                rotacao_simples_esquerda((No)atual,(No)antecessor);
                 return atual;
             }
         }
@@ -226,7 +232,7 @@ public class AVL implements ArvoreInterface {
     }
 
     public No rotacao_simples_direita(No A, No B) {
-        No vo = B.pai;
+        No vo = (No) B.pai;
         if (vo != null) { // caso o B n for raiz 
             if(vo.filho_direito.chave == B.chave){
                 vo.filho_direito = A;
@@ -254,7 +260,7 @@ public class AVL implements ArvoreInterface {
     
 
     public No rotacao_simples_esquerda(No atual, No antecessor) {
-        No vo = antecessor.pai;
+        No vo = (No) antecessor.pai;
         if (vo != null) { // caso o antecessor nao for raiz 
             if(vo.filho_direito!=null && vo.filho_direito.chave == antecessor.chave) { // verifica para coisar casos espelhados
                 vo.filho_direito = atual;
@@ -281,7 +287,7 @@ public class AVL implements ArvoreInterface {
     }
 
     public void remocao(int k) {
-        No v = treeSearch(k, root);
+        No v = (No)treeSearch(k, root);
         if (v == null)
             return;
         if (isExternal(v)) {
@@ -303,24 +309,25 @@ public class AVL implements ArvoreInterface {
             return;
         }
         if (k.pai.filho_esquerdo == k) {
-            k.pai.fb--;
+            ((No)k.pai).fb--;
             k.pai.filho_esquerdo = null;
-            atualiza_FB_remocao(k.pai);
+            atualiza_FB_remocao((No)k.pai);
             
         } else {
-            k.pai.fb++;
+            ((No)k.pai).fb++;
             k.pai.filho_direito = null;
-            atualiza_FB_remocao(k.pai);
+            atualiza_FB_remocao((No)k.pai);
            
         }
     }
 
-    public void Caso02remocao(No removido) {
+    @Override
+    public void Caso02remocao(NoABP removido) {
         No filho;
         if (removido.filho_esquerdo != null) {
-            filho = removido.filho_esquerdo;
+            filho = (No)removido.filho_esquerdo;
         } else {
-            filho = removido.filho_direito;
+            filho = (No)removido.filho_direito;
         }
         if (removido.pai == null) {
             root = filho;
@@ -328,20 +335,20 @@ public class AVL implements ArvoreInterface {
         } else {
             if (removido.pai.filho_esquerdo == removido) {
                 removido.pai.filho_esquerdo = filho;
-                removido.pai.fb--;
-                atualiza_FB_remocao(removido.pai); 
+                ((No)removido.pai).fb--;
+                atualiza_FB_remocao((No)removido.pai); 
             } else{
                 removido.pai.filho_direito = filho;
-                removido.pai.fb++;
-                atualiza_FB_remocao(removido.pai); 
+                ((No)removido.pai).fb++;
+                atualiza_FB_remocao((No)removido.pai); 
             }
             filho.pai = removido.pai;
         }
     }
 
     public void Caso03remocao(No v) {
-        No substituto = maiorMenor(v.filho_direito);
-        No old_pai_substituo = substituto.pai;
+        No substituto = maiorMenor((No)v.filho_direito);
+        No old_pai_substituo = (No)substituto.pai;
         atualiza_FB_remocao(substituto); // remoção fisica
         v.chave = substituto.chave;
         if((old_pai_substituo.filho_direito != null) && 
@@ -356,16 +363,17 @@ public class AVL implements ArvoreInterface {
 
     public No maiorMenor(No v) {
         while (v.filho_esquerdo != null) {
-            v = v.filho_esquerdo;
+            v = (No)v.filho_esquerdo;
         }
         return v;
     }
 
-    public void estrutura_no(Object[][] AVL, No atual, int coluna, int linha){
+    @Override
+    public void estrutura_no(Object[][] AVL, NoABP atual, int coluna, int linha){
         if (atual == null){ // fim
             return;
         }
-        AVL[linha][coluna-1] = atual.chave + "[" + atual.fb + "]";
+        AVL[linha][coluna-1] = atual.chave + "[" + ((No) atual).fb + "]";
         int aux = (int) Math.pow(2, height(this.root) - linha - 2); // vai definir a distancia da coluna dos filhos  em relação ao no atual qu é pai
 
         if (atual.filho_esquerdo != null) {
@@ -377,7 +385,8 @@ public class AVL implements ArvoreInterface {
         }
     }
 
-    public void imprimir(){
+    @Override
+    public void mostrar(){
         int altura = height(this.root); 
         int colunas = (int) Math.pow(2, altura);  //  2 pq é binaria, altura pq vai ser cada nivel pode ter a quantidade filho*2 pq cada filho pode ter filho 
         Object[][] AVL = new Object[altura][colunas];

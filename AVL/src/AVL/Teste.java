@@ -7,10 +7,10 @@ public class Teste {
         System.out.println("1.Teste");
         avl = new AVL();
         avl.inserir(6);
-        avl.imprimir();
+        avl.mostrar();
         avl.inserir(8);
         avl.inserir(9);
-        avl.imprimir();
+        avl.mostrar();
         System.out.println();
 
         System.out.println("2.Teste");
@@ -18,7 +18,7 @@ public class Teste {
         avl.inserir(6);
         avl.inserir(5);
         avl.inserir(4);
-        avl.imprimir();
+        avl.mostrar();
         System.out.println();
 
         System.out.println("3.Teste");
@@ -26,7 +26,7 @@ public class Teste {
         avl.inserir(7);
         avl.inserir(5);
         avl.inserir(6);
-        avl.imprimir();
+        avl.mostrar();
         System.out.println();
 
         System.out.println("4.Teste");
@@ -34,7 +34,7 @@ public class Teste {
         avl.inserir(6);
         avl.inserir(8);
         avl.inserir(7);
-        avl.imprimir();
+        avl.mostrar();
         System.out.println();
 
         System.out.println("Teste 5");
@@ -44,7 +44,7 @@ public class Teste {
         for(int chave:chaves_inseridas){
             System.out.printf("inserindo a chave %d%n: ", chave);
             avl.inserir(chave);
-            avl.imprimir();
+            avl.mostrar();
             System.out.println();
         }
 
@@ -55,21 +55,21 @@ public class Teste {
         for(int chave:chaves_inseridas2){
             System.out.printf("inserindo chave %d%n", chave);
             avl.inserir(chave);
-            avl.imprimir();
+            avl.mostrar();
         }
         System.out.println("Remoção chave 40");
         avl.remocao(40);
-        avl.imprimir();
+        avl.mostrar();
         System.out.println();
 
         System.out.println("Remoção chave 60");
         avl.remocao(60);
-        avl.imprimir();
+        avl.mostrar();
         System.out.println();
 
         System.out.println("Remoção chave 70");
         avl.remocao(70);
-        avl.imprimir();
+        avl.mostrar();
         System.out.println();
     }
 }
