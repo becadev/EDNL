@@ -2,10 +2,12 @@ package AVL;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import java.util.List;
 
 public class AVL implements ArvoreInterface {
     protected No root;
     protected int qtd_no;
+    protected List<Integer> arvore;
 
     AVL() {
         this.root = null;
@@ -359,38 +361,34 @@ public class AVL implements ArvoreInterface {
         return v;
     }
 
-    public void estrutura_no(Object[][] AVL, No no, int linha, int coluna){
-        if (no == null){ //fim
+    public void estrutura_no(Object[][] AVL, No atual, int coluna, int linha){
+        if (atual == null){ // fim
             return;
         }
-        AVL[linha][coluna] = no.chave + "[" + no.fb + "]";
-        int aux = (int) Math.pow(2, AVL.length - linha - 2);
+        AVL[linha][coluna-1] = atual.chave + "[" + atual.fb + "]";
+        int aux = (int) Math.pow(2, height(this.root) - linha - 2); // vai definir a distancia da coluna dos filhos  em relação ao no atual qu é pai
 
-        if (no.filho_direito != null) {
-            estrutura_no(AVL, no.filho_direito, linha + 1, coluna + aux);
+        if (atual.filho_esquerdo != null) {
+            estrutura_no(AVL, atual.filho_esquerdo, coluna - aux, linha + 1);
         }
 
-        if (no.filho_esquerdo != null) {
-            estrutura_no(AVL, no.filho_esquerdo, linha + 1, coluna - aux);
+        if (atual.filho_direito != null) {
+            estrutura_no(AVL, atual.filho_direito, coluna + aux, linha + 1);
         }
     }
 
     public void imprimir(){
-        int altura = height(this.root)+2; // mais um pra n começar do 0
-        int linha = altura+1;
-        int colunas = (int) Math.pow(2, altura) * 2; ;  // qtd nos por nivel em AB * qtd de espaço entre os nos
-
-        Object[][] AVL = new Object[linha][colunas];
-        
-        estrutura_no(AVL, this.root, 0, (int) colunas /2); // deixa tudo organizado na matriz
-        for (int i = 0; i < linha; i++){
-           
+        int altura = height(this.root); 
+        int colunas = (int) Math.pow(2, altura);  //  2 pq é binaria, altura pq vai ser cada nivel pode ter a quantidade filho*2 pq cada filho pode ter filho 
+        Object[][] AVL = new Object[altura][colunas];
+        estrutura_no(AVL, this.root, (int) colunas/2, 0); // dividido por dois pra ele começar no meio da matriz
+        for (int i = 0; i < altura; i++){
             for (int j = 0; j < colunas; j++){
                 if (AVL[i][j] == null){
-                    System.out.print(" "); 
+                    System.out.print("     "); // espaço de: no[fb] que vai ser substituido pelo vazio
                     // \t
                 } else {
-                    System.out.printf("%s", AVL[i][j]);
+                    System.out.print(AVL[i][j]);
                 }
             }
             System.out.println();

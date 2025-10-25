@@ -7,6 +7,7 @@ public class Teste {
         System.out.println("1.Teste");
         avl = new AVL();
         avl.inserir(6);
+        avl.imprimir();
         avl.inserir(8);
         avl.inserir(9);
         avl.imprimir();
