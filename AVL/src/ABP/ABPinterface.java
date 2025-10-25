@@ -1,35 +1,35 @@
 package ABP;
 
-public interface ABPinterface<T extends NoABP> {
+public interface ABPinterface{
     //  Métodos da AB
-    public int leftchild(T v);
-    public int rightchild(T v);
-    public boolean hasLeft(T v);
-    public boolean hasRight(T v);
+    public int leftchild(NoABP v);
+    public int rightchild(NoABP v);
+    public boolean hasLeft(NoABP v);
+    public boolean hasRight(NoABP v);
 
     //  Métodos genéricos
     public int size();
-    public int height(T v) ;
+    public int height(NoABP v) ;
     public boolean isEmpty();
 
-    public T root();
-    public T parent(int no);
+    public NoABP root();
+    public NoABP parent(int no);
 
 
     // Métodos de consulta
-    public boolean isInternal(T no);
-    public boolean isExternal(T no);
-    public boolean isRoot(T no);
-    public int depth(T no);
+    public boolean isInternal(NoABP no);
+    public boolean isExternal(NoABP no);
+    public boolean isRoot(NoABP no);
+    public int depth(NoABP no);
 
     // Métodos de atualização
-    public void replace(T no, int o);
+    public void replace(NoABP no, int o);
 
     // Método de busca
-    public T treeSearch(int k, T v); // k = elemento que será buscado, v = pai dele
+    public NoABP treeSearch(int k, NoABP v); // k = elemento que será buscado, v = pai dele
 
     // Método de inserção
-    public void insercao(T v, T k);
+    public void insercao(NoABP v, NoABP k);
     // primeiro verifica se K ta na arvore
 
     // Método de remoção
