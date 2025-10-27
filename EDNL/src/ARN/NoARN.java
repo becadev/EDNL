@@ -34,4 +34,17 @@ public class NoARN {
     public boolean isNegro() {
         return this.cor == 0;
     }
+
+    public String coloracao(){
+        if (this.isRubro()) {
+            String RESET = "\u001B[0m";
+            String RED = "\u001B[31m";
+            String chave_pintada = RED + chave + RESET;
+            return chave_pintada;
+        }
+        String RESET = "\u001B[0m";
+        String GRAY = "\u001B[90m";
+        String chave_pintada = GRAY + chave + RESET;
+        return chave_pintada;
+    }
 }

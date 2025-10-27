@@ -103,14 +103,14 @@ public class ARN{
 
     public NoARN inserir(int v) {
         NoARN novo = new NoARN(v);
+        qtd_no++;
         if (this.root == null) {
             this.root = novo;
             this.root.cor = negro;
-        } else {
-            novo.cor = rubro;
-            insercao(root, novo);
-        }
-        qtd_no++;
+            return novo;
+        } 
+        novo.cor = rubro;
+        insercao(root, novo);
         return novo;
     }
 
@@ -153,27 +153,68 @@ public class ARN{
         if(antecessor.cor == rubro) {
             NoARN avo = antecessor.pai;
 
-            // caso 1
-            if(avo.filho_esquerdo != null && avo.filho_esquerdo.cor == rubro) { // tio esquerdo
+            // caso 1: nodo, pai e tio sao vermelhos, pinta pai, tio e avo 
+            if( avo.filho_esquerdo != null && avo.filho_direito != null
+                && avo.filho_esquerdo.cor == rubro
+                && avo.filho_direito.chave == antecessor.chave) { // tio esquerdo
+                mostrar();
+                System.out.println("CASO 1 da inserção - esquerda");
                 avo.filho_esquerdo.cor = negro;
                 antecessor.cor = negro;
                 if(!isRoot(avo))
                     avo.cor = rubro;
+                NoARN bizavo = avo.pai;
+                if(avo.pai != null && bizavo.pai != null) {
+                    if(atual.chave == antecessor.filho_direito.chave) { // Caso 3B
+                        rotacao_simples_esquerda(bizavo, bizavo.pai);
+                        bizavo.cor = negro;
+                        bizavo.filho_esquerdo.cor = rubro;
+                    }
+                    else if(atual.chave == antecessor.filho_esquerdo.chave) { // Caso 3A
+                        rotacao_simples_direita(bizavo, bizavo.pai);
+                        bizavo.cor = negro;
+                        bizavo.filho_direito.cor = rubro;
+                    }
+                    
+                }
                 return atual;
             }//espelhamento
-            if(avo.filho_direito != null && avo.filho_direito.cor == rubro) { // tio direito
+            if( avo.filho_direito != null && avo.filho_esquerdo != null 
+                && avo.filho_direito.cor == rubro 
+                && avo.filho_esquerdo.chave == antecessor.chave) { // tio direito
+                mostrar();
+                System.out.println("CASO 1 da inserção - direita");
                 avo.filho_direito.cor = negro;
                 antecessor.cor = negro;
                 if(!isRoot(avo))
                     avo.cor = rubro;
+                NoARN bizavo = avo.pai;
+                if(avo.pai != null && bizavo.pai != null) {
+                    if(atual.chave == antecessor.filho_direito.chave) { // Caso 3B
+                        rotacao_simples_esquerda(bizavo, bizavo.pai);
+                        bizavo.cor = negro;
+                        bizavo.filho_esquerdo.cor = rubro;
+                    }
+                    else if(atual.chave == antecessor.filho_esquerdo.chave) { // Caso 3A
+                        rotacao_simples_direita(bizavo, bizavo.pai);
+                        bizavo.cor = negro;
+                        bizavo.filho_direito.cor = rubro;
+                    }
+                    
+                }
                 return atual;
             }
+
             //
             // caso 2 - leva para o caso 3
             if (avo.filho_direito != null 
                 && avo.filho_direito.cor == negro 
                 && antecessor.filho_direito.chave == atual.chave ) { // z tem um tio y negro e é filho direito, rotação a esquerda
+                System.out.println("CASO 2 da inserção");
+                System.out.println("1ª Rotação a esquerda");
                 rotacao_simples_esquerda(atual, antecessor);
+                mostrar();
+                System.out.println("2ª Rotação a direita");
                 rotacao_simples_direita(antecessor, avo);
                 // colore o pai do atual de preto e antigo pai do pai de vermelho
                 antecessor.cor = negro;
@@ -183,8 +224,11 @@ public class ARN{
                 (avo.filho_esquerdo != null
                 && avo.filho_esquerdo.cor == negro
                 && antecessor.filho_esquerdo.chave == atual.chave) {
-                
+                System.out.println("CASO 2 da inserção");
+                System.out.println("1ª Rotação a direita");
                 rotacao_simples_direita(atual, antecessor);
+                mostrar();
+                System.out.println("2ª Rotação a esquerda");
                 rotacao_simples_esquerda(antecessor, avo);
 
                 antecessor.cor = negro;
@@ -193,30 +237,64 @@ public class ARN{
             }
 
             // caso 3
-            if (atual.chave < antecessor.chave) { // é filho esquerdo entao verificar o tio que é direito
+            if (atual.chave < antecessor.chave && antecessor.chave < avo.chave) { // é filho esquerdo entao verificar o tio que é direito
                 if(antecessor.filho_direito == null) { // Caso 3a
+                    System.out.println("CASO 3 da inserção - 3A");
                     rotacao_simples_direita(antecessor, antecessor.pai);
                     antecessor.cor = negro;
                     antecessor.filho_direito.cor = rubro;
                 }
                 return atual;
             } 
-            if (atual.chave > antecessor.chave) { // é filho esquerdo entao verificar o tio que é direito
+            if (atual.chave > antecessor.chave && antecessor.chave > avo.chave) { // é filho esquerdo entao verificar o tio que é direito
                 if(antecessor.filho_esquerdo == null) { // Caso 3b
+                    mostrar();
+                    System.out.println("CASO 3 da inserção - 3B");
                     rotacao_simples_esquerda(antecessor, antecessor.pai);
                     antecessor.cor = negro;
                     antecessor.filho_esquerdo.cor = rubro;
                 }
                 return atual;
             } 
+            if (atual.chave < antecessor.chave && antecessor.chave > avo.chave) { // é filho esquerdo entao verificar o tio que é direito
+                if(antecessor.filho_direito == null) { // Caso 3c
+                    mostrar();
+                    System.out.println("CASO 3 da inserção - 3C");
+                    System.out.println("1ª Rotação a direita");
+                    rotacao_simples_direita(atual, antecessor);
+                    mostrar();
+                    System.out.println("2ª Rotação a esquerda");
+                    rotacao_simples_esquerda(atual, avo);
+                    mostrar();
+                    System.out.println("Repinta");
+                    antecessor.cor = rubro;
+                    atual.cor = negro;
+                    avo.cor = rubro;
+                   
+                }
+                return atual;
+            } 
+            if (atual.chave > antecessor.chave && antecessor.chave < avo.chave) { // é filho direito entao verificar o tio que é esquerdo
+                if(antecessor.filho_esquerdo == null) { // Caso 3d
+                    mostrar();
+                    System.out.println("CASO 3 da inserção - 3D");
+                    System.out.println("1ª Rotação a esquerda");
+                    rotacao_simples_esquerda(atual, antecessor);
+                    mostrar();
+                    System.out.println("2ª Rotação a direta");
+                    rotacao_simples_direita(atual, avo);
+                    mostrar();
+                    System.out.println("Repinta");
+                    antecessor.cor = rubro;
+                    atual.cor = negro;
+                    avo.cor = rubro;
+                    
+                }
+                return atual;
+            } 
         }
         return atual;
     }
-
-    // public void repinta(NoARN atual, NoARN filho) {
-    //     atual.cor = negro;
-    //     filho.cor = rubro;
-    // }
 
     public void rotacao_simples_direita(NoARN A, NoARN B) {
         NoARN vo = B.pai;
@@ -268,17 +346,77 @@ public class ARN{
 
     // Remoção
     public void remocao(int k) {
-
+        NoARN v = treeSearch(k, root);
+        if (v == null)
+            return;
+        if (isExternal(v)) {
+            System.out.println("CASO 01 DE REMOÇÃO: ");
+            Caso01remocao(v);
+        } else if (v.filho_esquerdo == null || v.filho_direito == null) {
+            System.out.println("CASO 02 DE REMOÇÃO: ");
+            Caso02remocao(v);
+        } else {
+            System.out.println("CASO 03 DE REMOÇÃO: ");
+            Caso03remocao(v);
+        }
+        qtd_no--;
     }
-
     public void Caso01remocao(NoARN k) {
-
+        if (k.pai == null) {
+            root = null;
+            return;
+        }
+        if (k.pai.filho_esquerdo == k) {
+            k.pai.filho_esquerdo = null;
+        } else {
+            k.pai.filho_direito = null;
+           
+        }
     }
+
     public void Caso02remocao(NoARN removido) {
+        NoARN filho;
+        if (removido.filho_esquerdo != null) {
+            filho = removido.filho_esquerdo;
+        } else {
+            filho = removido.filho_direito;
+        }
+        if (removido.pai == null) {
+            root = filho;
+            root.pai = null;
+        } else {
+            if (removido.pai.filho_esquerdo == removido) {
+                removido.pai.filho_esquerdo = filho;
+                balancear(removido, filho);
+            } else{
+                removido.pai.filho_direito = filho;
+                balancear(removido, filho);
+            }
+            filho.pai = removido.pai;
+        }
+    }
+
+    public void balancear_remocao(NoARN atual, NoARN antecessor, NoARN removido) {
 
     }
-    public void Caso03remocao(NoARN v) {
 
+    public void Caso03remocao(NoARN v) {
+        NoARN substituto = maiorMenor(v.filho_direito);
+        NoARN old_pai_substituo = substituto.pai;
+        // balancear_remocao(substituto, old_pai_substituo);
+        // if (substituto.cor == rubro && v.cor == negro) { // situação 2
+
+        // }
+
+        v.chave = substituto.chave;
+        if((old_pai_substituo.filho_direito != null) && 
+            old_pai_substituo.filho_direito.chave == substituto.chave){
+            old_pai_substituo.filho_direito = null;
+        }
+        else if((old_pai_substituo.filho_esquerdo != null) && 
+                old_pai_substituo.filho_esquerdo.chave == substituto.chave) { 
+            old_pai_substituo.filho_esquerdo = null;
+        }
     }
     public NoARN maiorMenor(NoARN v) {
         while (v.filho_esquerdo != null) {
@@ -287,11 +425,11 @@ public class ARN{
         return v;
     }
     
-    public void estrutura_no(Object[][] AVL, NoABP atual, int coluna, int linha){
+    public void estrutura_no(Object[][] AVL, NoARN atual, int coluna, int linha){
         if (atual == null){ // fim
             return;
         }
-        AVL[linha][coluna-1] = atual.chave + "[" + ((No) atual).fb + "]"; // mudar estrutura para pintura
+        AVL[linha][coluna-1] = atual.coloracao(); // mudar estrutura para pintura
         int aux = (int) Math.pow(2, height(this.root) - linha - 2); // vai definir a distancia da coluna dos filhos  em relação ao no atual qu é pai
 
         if (atual.filho_esquerdo != null) {
@@ -311,7 +449,7 @@ public class ARN{
         for (int i = 0; i < altura; i++){
             for (int j = 0; j < colunas; j++){
                 if (AVL[i][j] == null){
-                    System.out.print("     "); // espaço de: no[fb] que vai ser substituido pelo vazio
+                    System.out.print(" "); // espaço de: no[fb] que vai ser substituido pelo vazio
                     // \t
                 } else {
                     System.out.print(AVL[i][j]);
