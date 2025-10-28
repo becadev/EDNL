@@ -47,4 +47,15 @@ public class NoARN {
         String chave_pintada = GRAY + chave + RESET;
         return chave_pintada;
     }
+
+    public boolean isLeft() {
+        if(pai != null  && pai.filho_esquerdo!=null && pai.filho_esquerdo.chave == chave)
+            return true;
+        return false;
+    }
+    public boolean isRight() {
+        if(pai != null && pai.filho_direito!=null && pai.filho_direito.chave == chave)
+            return true;
+        return false;
+    }
 }

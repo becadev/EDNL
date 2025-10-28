@@ -149,151 +149,355 @@ public class ARN{
     // }
 
     // Balanceamento
-    public NoARN balancear(NoARN atual, NoARN antecessor) {
-        if(antecessor.cor == rubro) {
+    // public NoARN balancear(NoARN atual, NoARN antecessor) { 
+    //     if(antecessor.cor == rubro) {
+    //         NoARN avo = antecessor.pai;
+            
+    //         // Caso 1: nodo, pai e tio sao vermelhos, pinta pai, tio e avo 
+    //         if( avo.filho_esquerdo != null && avo.filho_direito != null
+    //             && avo.filho_esquerdo.cor == rubro && antecessor.cor == rubro // Pai e Tio rubros
+    //             && avo.filho_direito.chave == antecessor.chave) { // tio esquerdo
+    //             mostrar();
+    //             System.out.println("CASO 1 da inserção - esquerda");
+    //             avo.filho_esquerdo.cor = negro;
+    //             antecessor.cor = negro;
+    //             if(!isRoot(avo))
+    //                 avo.cor = rubro;
+    //             NoARN bizavo = avo.pai;
+    //             mostrar();
+
+    //             if(avo.pai != null && bizavo.pai != null) {
+    //                 if(atual.chave == antecessor.filho_direito.chave) { // Caso 3B
+    //                     rotacao_simples_esquerda(bizavo, bizavo.pai);
+    //                     bizavo.cor = negro;
+    //                     bizavo.filho_esquerdo.cor = rubro;
+    //                 }
+    //                 else if(atual.chave == antecessor.filho_esquerdo.chave) { // Caso 3A
+    //                     rotacao_simples_direita(bizavo, bizavo.pai);
+    //                     bizavo.cor = negro;
+    //                     bizavo.filho_direito.cor = rubro;
+    //                 }
+                     
+    //             }
+    //             return atual;
+    //         }//espelhamento
+    //         if( avo.filho_direito != null && avo.filho_esquerdo != null 
+    //             && avo.filho_direito.cor == rubro 
+    //             && avo.filho_esquerdo.chave == antecessor.chave) { // tio direito
+    //             mostrar();
+    //             System.out.println("CASO 1 da inserção - direita");
+    //             avo.filho_direito.cor = negro;
+    //             antecessor.cor = negro;
+    //             if(!isRoot(avo))
+    //                 avo.cor = rubro;
+    //             NoARN bizavo = avo.pai;
+    //             if(avo.pai != null && bizavo.pai != null) {
+    //                 if(atual.chave == antecessor.filho_direito.chave) { // Caso 3B
+    //                     rotacao_simples_esquerda(bizavo, bizavo.pai);
+    //                     bizavo.cor = negro;
+    //                     bizavo.filho_esquerdo.cor = rubro;
+    //                 }
+    //                 else if(atual.chave == antecessor.filho_esquerdo.chave) { // Caso 3A
+    //                     rotacao_simples_direita(bizavo, bizavo.pai);
+    //                     bizavo.cor = negro;
+    //                     bizavo.filho_direito.cor = rubro;
+    //                 }
+                    
+    //             }
+    //             return atual;
+    //         }
+
+    //         //
+    //         // caso 2 - leva para o caso 3
+    //         if (avo.filho_direito != null 
+    //             && avo.filho_direito.cor == negro 
+    //             && antecessor.filho_direito.chave == atual.chave ) { // z tem um tio y negro e é filho direito, rotação a esquerda
+    //             System.out.println("CASO 2 da inserção");
+    //             System.out.println("1ª Rotação a esquerda");
+    //             rotacao_simples_esquerda(atual, antecessor);
+    //             mostrar();
+    //             System.out.println("2ª Rotação a direita");
+    //             rotacao_simples_direita(antecessor, avo);
+    //             // colore o pai do atual de preto e antigo pai do pai de vermelho
+    //             antecessor.cor = negro;
+    //             antecessor.filho_direito.cor = rubro;
+    //             return atual;
+    //         }else if // espelhamento
+    //             (avo.filho_esquerdo != null
+    //             && avo.filho_esquerdo.cor == negro
+    //             && antecessor.filho_esquerdo.chave == atual.chave) {
+    //             System.out.println("CASO 2 da inserção");
+    //             System.out.println("1ª Rotação a direita");
+    //             rotacao_simples_direita(atual, antecessor);
+    //             mostrar();
+    //             System.out.println("2ª Rotação a esquerda");
+    //             rotacao_simples_esquerda(antecessor, avo);
+
+    //             antecessor.cor = negro;
+    //             antecessor.filho_esquerdo.cor = rubro;
+    //             return atual;
+    //         }
+
+    //         // caso 3
+    //         if (atual.chave < antecessor.chave && antecessor.chave < avo.chave) { // é filho esquerdo entao verificar o tio que é direito
+    //             if(antecessor.filho_direito == null) { // Caso 3a
+    //                 System.out.println("CASO 3 da inserção - 3A");
+    //                 rotacao_simples_direita(antecessor, antecessor.pai);
+    //                 antecessor.cor = negro;
+    //                 antecessor.filho_direito.cor = rubro;
+    //             }
+    //             return atual;
+    //         } 
+    //         if (atual.chave > antecessor.chave && antecessor.chave > avo.chave) { // é filho esquerdo entao verificar o tio que é direito
+    //             if(antecessor.filho_esquerdo == null) { // Caso 3b
+    //                 mostrar();
+    //                 System.out.println("CASO 3 da inserção - 3B");
+    //                 rotacao_simples_esquerda(antecessor, antecessor.pai);
+    //                 antecessor.cor = negro;
+    //                 antecessor.filho_esquerdo.cor = rubro;
+    //             }
+    //             return atual;
+    //         } 
+    //         if (atual.chave < antecessor.chave && antecessor.chave > avo.chave) { // é filho esquerdo entao verificar o tio que é direito
+    //             if(antecessor.filho_direito == null) { // Caso 3c
+    //                 mostrar();
+    //                 System.out.println("CASO 3 da inserção - 3C");
+    //                 System.out.println("1ª Rotação a direita");
+    //                 rotacao_simples_direita(atual, antecessor);
+    //                 mostrar();
+    //                 System.out.println("2ª Rotação a esquerda");
+    //                 rotacao_simples_esquerda(atual, avo);
+    //                 mostrar();
+    //                 System.out.println("Repinta");
+    //                 antecessor.cor = rubro;
+    //                 atual.cor = negro;
+    //                 avo.cor = rubro;
+                   
+    //             }
+    //             return atual;
+    //         } 
+    //         if (atual.chave > antecessor.chave && antecessor.chave < avo.chave) { // é filho direito entao verificar o tio que é esquerdo
+    //             if(antecessor.filho_esquerdo == null) { // Caso 3d
+    //                 mostrar();
+    //                 System.out.println("CASO 3 da inserção - 3D");
+    //                 System.out.println("1ª Rotação a esquerda");
+    //                 rotacao_simples_esquerda(atual, antecessor);
+    //                 mostrar();
+    //                 System.out.println("2ª Rotação a direta");
+    //                 rotacao_simples_direita(atual, avo);
+    //                 mostrar();
+    //                 System.out.println("Repinta");
+    //                 antecessor.cor = rubro;
+    //                 atual.cor = negro;
+    //                 avo.cor = rubro;
+                    
+    //             }
+    //             return atual;
+    //         } 
+    //     }
+    //     return atual;
+    // }
+
+
+    public void balancear(NoARN atual, NoARN antecessor) {
+        if(antecessor != null && antecessor.pai != null) { 
             NoARN avo = antecessor.pai;
 
-            // caso 1: nodo, pai e tio sao vermelhos, pinta pai, tio e avo 
-            if( avo.filho_esquerdo != null && avo.filho_direito != null
-                && avo.filho_esquerdo.cor == rubro
-                && avo.filho_direito.chave == antecessor.chave) { // tio esquerdo
-                mostrar();
-                System.out.println("CASO 1 da inserção - esquerda");
-                avo.filho_esquerdo.cor = negro;
-                antecessor.cor = negro;
-                if(!isRoot(avo))
-                    avo.cor = rubro;
-                NoARN bizavo = avo.pai;
-                if(avo.pai != null && bizavo.pai != null) {
-                    if(atual.chave == antecessor.filho_direito.chave) { // Caso 3B
-                        rotacao_simples_esquerda(bizavo, bizavo.pai);
-                        bizavo.cor = negro;
-                        bizavo.filho_esquerdo.cor = rubro;
-                    }
-                    else if(atual.chave == antecessor.filho_esquerdo.chave) { // Caso 3A
-                        rotacao_simples_direita(bizavo, bizavo.pai);
-                        bizavo.cor = negro;
-                        bizavo.filho_direito.cor = rubro;
-                    }
-                    
-                }
-                return atual;
-            }//espelhamento
-            if( avo.filho_direito != null && avo.filho_esquerdo != null 
-                && avo.filho_direito.cor == rubro 
-                && avo.filho_esquerdo.chave == antecessor.chave) { // tio direito
-                mostrar();
-                System.out.println("CASO 1 da inserção - direita");
-                avo.filho_direito.cor = negro;
-                antecessor.cor = negro;
-                if(!isRoot(avo))
-                    avo.cor = rubro;
-                NoARN bizavo = avo.pai;
-                if(avo.pai != null && bizavo.pai != null) {
-                    if(atual.chave == antecessor.filho_direito.chave) { // Caso 3B
-                        rotacao_simples_esquerda(bizavo, bizavo.pai);
-                        bizavo.cor = negro;
-                        bizavo.filho_esquerdo.cor = rubro;
-                    }
-                    else if(atual.chave == antecessor.filho_esquerdo.chave) { // Caso 3A
-                        rotacao_simples_direita(bizavo, bizavo.pai);
-                        bizavo.cor = negro;
-                        bizavo.filho_direito.cor = rubro;
-                    }
-                    
-                }
-                return atual;
-            }
-
-            //
-            // caso 2 - leva para o caso 3
-            if (avo.filho_direito != null 
-                && avo.filho_direito.cor == negro 
-                && antecessor.filho_direito.chave == atual.chave ) { // z tem um tio y negro e é filho direito, rotação a esquerda
-                System.out.println("CASO 2 da inserção");
-                System.out.println("1ª Rotação a esquerda");
-                rotacao_simples_esquerda(atual, antecessor);
-                mostrar();
-                System.out.println("2ª Rotação a direita");
-                rotacao_simples_direita(antecessor, avo);
-                // colore o pai do atual de preto e antigo pai do pai de vermelho
-                antecessor.cor = negro;
-                antecessor.filho_direito.cor = rubro;
-                return atual;
-            }else if // espelhamento
-                (avo.filho_esquerdo != null
-                && avo.filho_esquerdo.cor == negro
-                && antecessor.filho_esquerdo.chave == atual.chave) {
-                System.out.println("CASO 2 da inserção");
-                System.out.println("1ª Rotação a direita");
-                rotacao_simples_direita(atual, antecessor);
-                mostrar();
-                System.out.println("2ª Rotação a esquerda");
-                rotacao_simples_esquerda(antecessor, avo);
-
-                antecessor.cor = negro;
-                antecessor.filho_esquerdo.cor = rubro;
-                return atual;
-            }
-
-            // caso 3
-            if (atual.chave < antecessor.chave && antecessor.chave < avo.chave) { // é filho esquerdo entao verificar o tio que é direito
-                if(antecessor.filho_direito == null) { // Caso 3a
-                    System.out.println("CASO 3 da inserção - 3A");
-                    rotacao_simples_direita(antecessor, antecessor.pai);
-                    antecessor.cor = negro;
-                    antecessor.filho_direito.cor = rubro;
-                }
-                return atual;
-            } 
-            if (atual.chave > antecessor.chave && antecessor.chave > avo.chave) { // é filho esquerdo entao verificar o tio que é direito
-                if(antecessor.filho_esquerdo == null) { // Caso 3b
+        if(antecessor.cor == rubro && atual.cor == rubro) {
+                // Caso 1 -> atual, pai e tio sao rubros, repinta pai, tio e avo, se avo for raiz, repinta de negro(caso 0)
+                if( atual.cor == rubro && antecessor.cor == rubro && // 
+                    avo.filho_direito != null && avo.filho_direito.chave != antecessor.chave){
                     mostrar();
-                    System.out.println("CASO 3 da inserção - 3B");
+                    System.out.println("Caso 1 - repinta pai, tio e avo (se nao for raiz)"); 
+                    antecessor.cor = negro;
+                    avo.filho_direito.cor = negro;
+                    
+                    if(avo.pai != null) {// avo não é raiz
+                        avo.cor = rubro;
+                    }
+                    atual = avo;
+                    antecessor = avo.pai;
+                    // if(atual.cor == rubro && antecessor.cor == rubro) {
+                    //     avo = antecessor.pai;
+                    //     avo.filho_direito.cor = negro;
+                    //     antecessor.cor = negro;
+                    //     if(avo.pai != null) {
+                    //         avo.cor = rubro;
+                    //     }
+                    //     return;
+                    // }
+                    mostrar();
+                } else if // espelhamento
+                   (atual.cor == rubro && antecessor.cor == rubro && // 
+                    avo.filho_esquerdo != null && avo.filho_esquerdo.chave != antecessor.chave){
+                    mostrar();
+                    System.out.println("Caso 1 - repinta pai, tio e avo (se nao for raiz)"); 
+                    antecessor.cor = negro;
+                    avo.filho_esquerdo.cor = negro;
+
+                    if(avo.pai != null) {// avo não é raiz
+                        avo.cor = rubro;
+                    }
+                    atual = avo;
+                    antecessor = avo.pai;
+                    // if(atual.cor == rubro && antecessor.cor == rubro) {
+                    //     avo = antecessor.pai;
+                    //     avo.filho_direito.cor = negro;
+                    //     antecessor.cor = negro;
+                    //     if(avo.pai != null) {
+                    //         avo.cor = rubro;
+                    //     }
+                    //     return;
+                    // }
+
+                    mostrar();
+                }
+                // Caso 2 -> atual e pai so rubros, pai é filho direito e atual é filho esquerdo, rotaciona para a esquerda e chama Caso 3 | atual e pai so rubros, pai é filho esquerdo e atual é filho direito, rotaciona para a direita e chama Caso 3
+                if(atual.cor == rubro && antecessor.cor == rubro 
+                    && antecessor.isRight() && atual.isLeft()) {
+                        System.out.println("Caso 2 - esquerda");
+                        System.out.println("Rotação a esquerda");
+                        rotacao_simples_esquerda(atual, antecessor);
+                        NoARN old_antecessor = antecessor;
+                        antecessor = atual;
+                        atual = old_antecessor;
+
+                }else if(atual.cor == rubro && antecessor.cor == rubro 
+                    && antecessor.isLeft() && atual.isRight()) {
+                        System.out.println("Caso 2 - direita");
+                        System.out.println("Rotação a direita");
+                        rotacao_simples_direita(atual, antecessor);
+                        NoARN old_antecessor = antecessor;
+                        antecessor = atual;
+                        atual = old_antecessor;
+                }
+
+                // if(atual.cor == rubro && antecessor.cor == rubro) {
+                //     // Pinta pai, tio e avo se nao for raiz 
+                //     avo = antecessor.pai;
+                //     antecessor.cor = negro;
+                //     System.out.println(atual.chave);
+                //     System.out.println(antecessor.chave);
+                //     if(avo.filho_direito != null && avo.filho_direito.chave != antecessor.chave) {
+                //         System.out.println("avo.filho_direito.chave");
+                //         System.out.println(avo.filho_direito.chave);
+                //         avo.filho_direito.cor = negro; 
+                //     }else if(avo.filho_esquerdo != null && avo.filho_esquerdo.chave != antecessor.chave){
+                //         System.out.println("avo.filho_esquerdo.chave");
+                //         System.out.println(avo.filho_esquerdo.chave);
+                //         avo.filho_esquerdo.cor = negro;
+                //     }
+
+                //     if(avo.pai != null) {
+                //         avo.cor = rubro;
+                //     }
+                //     return;
+                // }
+
+                // Caso 3A -> atual e antecessor são filhos esquerdos e tio é folha -- Rotacao simples a direita repinta antigo pai de negro e antigo avo de rubro
+                if(atual.isLeft() && antecessor.isLeft()) {
+                    System.out.println("Caso 3A");
+                    System.out.println("Rotação a direita");
+                    rotacao_simples_direita(antecessor, avo);
+                    mostrar();
+                    System.out.println("Repinta pai de negro e antigo avo de rubro");
+                    antecessor.cor = negro;
+                    avo.cor = rubro;
+                    return;
+                }
+                // Caso 3B -> atual e antecessor são filhos direitos e tio é folha -- rotacao simples a esquerda e repinta antigo pai de negro e  avo de rubro
+                if(atual.isRight() && antecessor.isRight()) {
+                    System.out.println("Caso 3B - atual e antecessor sao filhos direitos");
+                    System.out.println("Rotação a esquerda");
+                    NoARN old_avo = antecessor.pai;
                     rotacao_simples_esquerda(antecessor, antecessor.pai);
-                    antecessor.cor = negro;
-                    antecessor.filho_esquerdo.cor = rubro;
-                }
-                return atual;
-            } 
-            if (atual.chave < antecessor.chave && antecessor.chave > avo.chave) { // é filho esquerdo entao verificar o tio que é direito
-                if(antecessor.filho_direito == null) { // Caso 3c
                     mostrar();
-                    System.out.println("CASO 3 da inserção - 3C");
+                    System.out.println("Repinta pai de negro e avo de rubro");
+                    antecessor.cor = negro;
+                    old_avo.cor = rubro;
+                    return;
+                }
+
+                // Caso 3C -> atual é filho esquerdo e pai é filho direito, rotacao a direita com atual e pai, rotacao a esquerda com atual e avo, repinta antigo avo de rubro e antigo atual de negro 
+                if(atual.isLeft() && antecessor.isRight()) {
+                    System.out.println("Caso 3C");
                     System.out.println("1ª Rotação a direita");
                     rotacao_simples_direita(atual, antecessor);
                     mostrar();
                     System.out.println("2ª Rotação a esquerda");
                     rotacao_simples_esquerda(atual, avo);
                     mostrar();
-                    System.out.println("Repinta");
-                    antecessor.cor = rubro;
-                    atual.cor = negro;
-                    avo.cor = rubro;
-                   
+                    System.out.println("Repinta antigo avo de rubro e antigo atual de negro");
+                    avo.cor = rubro; // antigo avo
+                    atual.cor = negro; // antigo atual
+                    return;
                 }
-                return atual;
-            } 
-            if (atual.chave > antecessor.chave && antecessor.chave < avo.chave) { // é filho direito entao verificar o tio que é esquerdo
-                if(antecessor.filho_esquerdo == null) { // Caso 3d
-                    mostrar();
-                    System.out.println("CASO 3 da inserção - 3D");
+
+                // Caso 3D -> atual é filho direito e pai é filho esquerdo, rotacao a esquerda com atual e pai, rotacao a direita com atual e avo, repinta antigo avo de rubro e antigo atual de negro 
+                if(atual.isRight() && antecessor.isLeft()) {
+                    System.out.println("Caso 3D");
                     System.out.println("1ª Rotação a esquerda");
                     rotacao_simples_esquerda(atual, antecessor);
                     mostrar();
-                    System.out.println("2ª Rotação a direta");
+                    System.out.println("2ª Rotação a direita");
                     rotacao_simples_direita(atual, avo);
-                    mostrar();
-                    System.out.println("Repinta");
-                    antecessor.cor = rubro;
-                    atual.cor = negro;
-                    avo.cor = rubro;
-                    
+                    System.out.println("Repinta antigo avo de rubro e antigo atual de negro");
+                    avo.cor = rubro; // antigo avo
+                    atual.cor = negro; // antigo atual
                 }
-                return atual;
-            } 
+            }
+            // if( avo.filho_esquerdo != null && avo.filho_direito != null
+            //     && avo.filho_esquerdo.cor == rubro && antecessor.cor == rubro // Pai e Tio rubros
+            //     && avo.filho_direito.chave == antecessor.chave) { // tio esquerdo
+            //     mostrar();
+            //     System.out.println("CASO 1 da inserção - esquerda");
+            //     avo.filho_esquerdo.cor = negro;
+            //     antecessor.cor = negro;
+            //     if(!isRoot(avo))
+            //         avo.cor = rubro;
+            //     NoARN bizavo = avo.pai;
+            //     mostrar();
+
+            // }//espelhamento
+            // else if( avo.filho_direito != null && avo.filho_esquerdo != null 
+            //     && avo.filho_direito.cor == rubro 
+            //     && avo.filho_esquerdo.chave == antecessor.chave) { // tio direito
+            //     mostrar();
+            //     System.out.println("CASO 1 da inserção - direita");
+            //     avo.filho_direito.cor = negro;
+            //     antecessor.cor = negro;
+            //     if(!isRoot(avo))
+            //         avo.cor = rubro;
+            //     NoARN bizavo = avo.pai;
+            //     mostrar();
+            // }
+            // // atual rubro e pai rubro
+            // if(atual.cor == rubro && antecessor.cor == rubro) { // Caso 2
+            //     NoARN old_antecessor = antecessor;
+            //     if(antecessor.filho_esquerdo != null && atual.chave == antecessor.filho_esquerdo.chave) {// é filho esquerodo
+            //         rotacao_simples_direita(antecessor, antecessor);
+            //     }else if(antecessor.filho_direito != null && atual.chave == antecessor.filho_direito.chave){ // é filho direito
+            //         rotacao_simples_esquerda(atual, antecessor);
+            //     }
+            //     antecessor = atual;
+            //     atual = old_antecessor;
+            //     System.out.println(atual.chave);
+            //     System.out.println(antecessor.chave);
+            //     // CASO 3 - 
+            //     if( avo.filho_direito != null &&
+            //         avo.filho_direito.chave == atual.chave 
+            //         && atual.filho_direito.chave == antecessor.filho_direito.chave){ // atual e o pai são filhos da direita, roda pra esquerda
+            //             rotacao_simples_esquerda(antecessor, avo);
+
+            //     }else if(avo.filho_esquerdo != null &&
+            //             avo.filho_esquerdo.chave == atual.chave 
+            //             && atual.filho_esquerdo.chave == antecessor.filho_esquerdo.chave) { // atual e pai sao filhos esquerdo, roda pra direita
+            //             rotacao_simples_direita(antecessor, avo);
+            //         }
+
+            // }   
         }
-        return atual;
+    
     }
 
     public void rotacao_simples_direita(NoARN A, NoARN B) {
